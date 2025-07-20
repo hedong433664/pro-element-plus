@@ -1,0 +1,35 @@
+{
+  "name": "pro-element-plus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --filter @pro-element-plus/play dev",
+    "docs:dev": "pnpm --filter @pro-element-plus/docs dev",
+    "docs:build": "pnpm --filter @pro-element-plus/docs build",
+    "docs:preview": "pnpm --filter @pro-element-plus/docs preview",
+    "test": "echo 'todo'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.5",
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@pro-element-plus/hooks": "workspace:*",
+    "@pro-element-plus/theme": "workspace:*",
+    "@pro-element-plus/utils": "workspace:*",
+    "element-plus": "^2.10.4",
+    "pro-element-plus": "workspace:*",
+    "vue": "^3.5.17"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.15",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vitejs/plugin-vue-jsx": "^5.0.1",
+    "@vue/tsconfig": "^0.7.0",
+    "sass": "^1.89.2",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  }
+}
