@@ -1,7 +1,7 @@
 ---
 search: false
 next:
-  link: /components/RadioGroup
+  link: /components/radioGroup
   text: RadioGroup 单选框组
 ---
 
