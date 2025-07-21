@@ -1,13 +1,10 @@
 import { createApp } from "vue"
 import App from "./App.vue"
-import ProElementPlus from "pro-element-plus"
-// import { ProRadioGroup } from "pro-element-plus"
+import { ProCheckboxGroup, ProRadioGroup } from "@pro-element-plus/components"
 import "pro-element-plus/dist/index.css"
 
 const app = createApp(App)
 
-// 全局引入
-app.use(ProElementPlus)
-// 按需引入
-// app.component("ProRadioGroup", ProRadioGroup)
+app.component("ProCheckboxGroup", ProCheckboxGroup)
+app.component("ProRadioGroup", ProRadioGroup)
 app.mount("#app")

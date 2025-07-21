@@ -17,6 +17,7 @@
   "packageManager": "pnpm@10.6.5",
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@pro-element-plus/components": "workspace:*",
     "@pro-element-plus/hooks": "workspace:*",
     "@pro-element-plus/theme": "workspace:*",
     "@pro-element-plus/utils": "workspace:*",

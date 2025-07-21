@@ -42,7 +42,7 @@ interface Emits {
 }
 
 const modelValue = defineModel<ProRadioGroupValueType>()
-const emit = defineEmits<Emits>()
+const emits = defineEmits<Emits>()
 const props = withDefaults(defineProps<ProRadioGroupProps>(), {
   labelKey: "label",
   valueKey: "value",
@@ -74,7 +74,7 @@ const innerOptions = computed(() => {
 const handleChange = (val: ProRadioGroupValueType) => {
   const checkedOption: ProRadioGroupOption =
     innerOptions.value.find(item => item[props.valueKey] === val) || {}
-  emit("change", val, checkedOption)
+  emits("change", val, checkedOption)
 }
 </script>
 

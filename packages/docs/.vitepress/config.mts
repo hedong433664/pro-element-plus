@@ -22,9 +22,12 @@ export default defineConfig({
         items: [{ text: "快速开始", link: "/get-started" }]
       },
       {
-        text: "单选框组",
+        text: "表单组件",
         collapsed: false,
-        items: [{ text: "RadioGroup 单选框组", link: "components/radioGroup" }]
+        items: [
+          { text: "RadioGroup 单选框组", link: "components/radioGroup" },
+          { text: "CheckboxGroup 多选框组", link: "components/checkboxGroup" }
+        ]
       }
     ],
 
