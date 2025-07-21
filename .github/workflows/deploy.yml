@@ -73,6 +73,6 @@ jobs:
       #     publish_dir: .
       - name: Deploy to GitHub Pages
         run: |
-          git add .
-          git commit -m 'fix'
-          git push https://github.com/hedong433664/pro-element-plus.git . -f
+          ls -a
+          
+          
