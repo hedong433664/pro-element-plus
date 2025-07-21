@@ -37,8 +37,12 @@ defineOptions({
   name: "ProRadioGroup"
 })
 
+interface Emits {
+  (e: "change", val: ProRadioGroupValueType, checkedOption: ProRadioGroupOption): void
+}
+
 const modelValue = defineModel<ProRadioGroupValueType>()
-const emit = defineEmits(["change"])
+const emit = defineEmits<Emits>()
 const props = withDefaults(defineProps<ProRadioGroupProps>(), {
   labelKey: "label",
   valueKey: "value",

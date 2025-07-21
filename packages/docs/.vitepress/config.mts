@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress"
+import { containerPreview, componentPreview } from "@vitepress-demo-preview/plugin"
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -8,20 +9,33 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: "Home", link: "/" },
-      { text: "Examples", link: "/markdown-examples" }
+      { text: "开始使用", link: "/get-started" },
+      { text: "组件", link: "/components/radioGroup" }
     ],
-
+    search: {
+      provider: "local"
+    },
     sidebar: [
       {
-        text: "Examples",
-        items: [
-          { text: "Markdown Examples", link: "/markdown-examples" },
-          { text: "Runtime API Examples", link: "/api-examples" }
-        ]
+        text: "指南",
+        collapsed: false,
+        items: [{ text: "快速开始", link: "/get-started" }]
+      },
+      {
+        text: "单选框组",
+        collapsed: false,
+        items: [{ text: "RadioGroup 单选框组", link: "components/radioGroup" }]
       }
     ],
 
-    socialLinks: [{ icon: "github", link: "https://github.com/vuejs/vitepress" }]
+    socialLinks: [
+      { icon: "github", link: "https://github.com/hedong433664/pro-element-plus" }
+    ]
+  },
+  markdown: {
+    config(md) {
+      md.use(containerPreview)
+      md.use(componentPreview)
+    }
   }
 })

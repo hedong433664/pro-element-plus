@@ -1,4 +1,4 @@
-import type { RadioGroupProps, RadioProps } from 'element-plus'
+import type { RadioGroupProps, RadioProps } from "element-plus"
 
 export type ProRadioGroupValueType = string | number | boolean | undefined
 
@@ -35,11 +35,11 @@ export type ProRadioGroupProps = {
   /**
    * @description 使用边框样式
    */
-  isBorder?: RadioProps['border']
+  isBorder?: RadioProps["border"]
   /**
    * @description 选项大小
    */
-  size?: RadioGroupProps['size']
+  size?: RadioGroupProps["size"]
   /**
    * @description 排除的选项
    */
@@ -53,20 +53,13 @@ export type ProRadioGroupProps = {
   /**
    * @description 当按钮为活跃状态时的字体颜色
    */
-  textColor?: RadioGroupProps['textColor']
+  textColor?: RadioGroupProps["textColor"]
   /**
    * @description 当按钮为活跃状态时的边框和背景颜色
    */
-  fill?: RadioGroupProps['fill']
+  fill?: RadioGroupProps["fill"]
   /**
    * @description 是否禁用
    */
-  disabled?: RadioGroupProps['disabled']
-  /**
-   * @description 选项改变时触发
-   */
-  onChange?: (
-    value: ProRadioGroupValueType,
-    checkedOption: ProRadioGroupOption,
-  ) => void
+  disabled?: RadioGroupProps["disabled"]
 }

@@ -8,6 +8,7 @@
     "docs:dev": "pnpm --filter @pro-element-plus/docs dev",
     "docs:build": "pnpm --filter @pro-element-plus/docs build",
     "docs:preview": "pnpm --filter @pro-element-plus/docs preview",
+    "build": "pnpm --filter pro-element-plus build",
     "test": "echo 'todo'"
   },
   "keywords": [],
@@ -28,6 +29,8 @@
     "@vitejs/plugin-vue": "^6.0.0",
     "@vitejs/plugin-vue-jsx": "^5.0.1",
     "@vue/tsconfig": "^0.7.0",
+    "move-file-cli": "^3.0.0",
+    "npm-run-all": "^4.1.5",
     "sass": "^1.89.2",
     "typescript": "~5.8.3",
     "vite": "^7.0.4"
