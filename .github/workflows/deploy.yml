@@ -55,19 +55,30 @@ jobs:
         with:
           name: docs
           path: ./packages/docs/.vitepress/dist
-
-  deploy:
-    name: Deploy to GitHub Pages
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download docs
-        uses: actions/download-artifact@v4
+          
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        if: github.ref == 'refs/heads/master'
         with:
-          name: docs
+          token: ${{ secrets.GH_TOKEN }}
+          branch: gh-pages  # default: gh-pages
+          folder: ./packages/docs/.vitepress/dist
+          clean: true # Automatically remove deleted files from the deploy branch
+          # commit-message: ${{ github.event.head_commit.message }} # default: `Deploying to gh-pages from @ 3238feb 🚀`
+          # commit-message: "deploy: ${{ github.sha }} (${{ github.event.head_commit.message }}) 🚀 "
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: .
+  # deploy:
+  #   name: Deploy to GitHub Pages
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Download docs
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: docs
+      
+      # - name: Deploy to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GH_TOKEN }}
+      #     publish_dir: .
