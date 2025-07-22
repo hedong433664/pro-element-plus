@@ -24,11 +24,3 @@ const options2: ProRadioGroupOption[] = [
   { label: "选项 3", value: "3" }
 ]
 </script>
-
-<style lang="scss" scoped>
-.demo-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-</style>

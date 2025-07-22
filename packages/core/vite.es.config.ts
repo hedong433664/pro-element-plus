@@ -1,9 +1,13 @@
 import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
 import { resolve } from "path"
+import { readdirSync } from "fs"
 import dts from "vite-plugin-dts"
+function getDirectoriesSync(basePath: string) {
+  const entries = readdirSync(basePath, { withFileTypes: true })
 
-const COMP_NAMES = ["RadioGroup"]
+  return entries.filter(item => item.isDirectory()).map(item => item.name)
+}
 
 export default defineConfig({
   plugins: [
@@ -40,7 +44,7 @@ export default defineConfig({
           if (id.includes("/packages/utils")) {
             return "utils"
           }
-          for (const item of COMP_NAMES) {
+          for (const item of getDirectoriesSync("../components")) {
             if (id.includes(`/packages/components/${item}`)) {
               return item
             }

@@ -4,5 +4,5 @@ import "@pro-element-plus/theme/index.scss"
 
 const installer = makeInstaller(components)
 
-export * from "@pro-element-plus/components"
+export * from "../components"
 export default installer

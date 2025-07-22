@@ -21,11 +21,3 @@ const options: ProCheckboxGroupOption[] = [
   { label: "篮球", value: "4" }
 ]
 </script>
-
-<style lang="scss" scoped>
-.demo-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-</style>

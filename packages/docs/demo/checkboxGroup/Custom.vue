@@ -20,11 +20,3 @@ const options: ProCheckboxGroupOption[] = [
   { customLabel: "选项 3", customValue: "3" }
 ]
 </script>
-
-<style lang="scss" scoped>
-.demo-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-</style>

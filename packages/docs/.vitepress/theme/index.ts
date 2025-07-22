@@ -4,6 +4,7 @@ import "@vitepress-demo-preview/component/dist/style.css"
 
 import ProElementPlus from "pro-element-plus"
 import "pro-element-plus/dist/index.css"
+import "./index.css"
 
 export default {
   ...DefaultTheme,

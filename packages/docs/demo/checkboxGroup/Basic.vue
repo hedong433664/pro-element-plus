@@ -16,10 +16,4 @@ const options: ProCheckboxGroupOption[] = [
 ]
 </script>
 
-<style lang="scss" scoped>
-.demo-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-</style>
+<style lang="scss" scoped></style>
