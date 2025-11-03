@@ -34,6 +34,7 @@ import 'element-plus/theme-chalk/src/switch.scss'
 import 'element-plus/theme-chalk/src/select.scss'
 import 'element-plus/theme-chalk/src/checkbox-group.scss'
 import 'element-plus/theme-chalk/src/radio-group.scss'
+import 'element-plus/theme-chalk/src/date-picker-panel.scss'
 import 'element-plus/theme-chalk/src/date-picker.scss'
 import 'element-plus/theme-chalk/src/time-picker.scss'
 
