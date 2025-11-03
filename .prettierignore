@@ -1,0 +1,8 @@
+/**/node_modules
+/**/dist/**
+/**/cache/**
+/html/*
+.local
+**/*.svg
+**/*.sh
+/public/*

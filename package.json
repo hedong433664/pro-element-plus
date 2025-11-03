@@ -1,0 +1,53 @@
+{
+  "name": "pro-element-plus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --filter @pro-element-plus/play dev",
+    "docs:dev": "pnpm --filter @pro-element-plus/docs dev",
+    "docs:build": "pnpm --filter @pro-element-plus/docs build",
+    "build": "pnpm --filter pro-element-plus build",
+    "lint": "eslint . --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.5",
+  "dependencies": {
+    "@pro-element-plus/components": "workspace:^",
+    "@pro-element-plus/utils": "workspace:^",
+    "pro-element-plus": "workspace:*"
+  },
+  "devDependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
+    "@eslint/js": "^9.38.0",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^24.6.0",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vitejs/plugin-vue-jsx": "^5.1.1",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/tsconfig": "^0.8.1",
+    "element-plus": "^2.11.5",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-vue": "^10.5.1",
+    "globals": "^16.4.0",
+    "jiti": "^2.6.1",
+    "lodash-es": "^4.17.21",
+    "move-file-cli": "^3.0.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "sass": "^1.93.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.2",
+    "unplugin-auto-import": "^20.2.0",
+    "unplugin-element-plus": "^0.10.0",
+    "unplugin-vue-components": "^30.0.0",
+    "vite": "^7.1.7",
+    "vite-plugin-dts": "^4.5.4",
+    "vue": "^3.5.22"
+  }
+}

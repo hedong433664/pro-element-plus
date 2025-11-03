@@ -1,0 +1,12 @@
+:root {
+  --vp-layout-max-width: 1680px;
+}
+
+.VPDoc.has-aside .content-container {
+  max-width: 1200px !important;
+}
+
+.vp-doc table {
+  width: 100%;
+  display: inline-table;
+}
