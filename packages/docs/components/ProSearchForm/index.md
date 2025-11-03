@@ -13,6 +13,8 @@ next:
 
 # ProSearchForm 查询表单
 
+基于 `ProForm` 进行封装，支持折叠展开、重置、自动查询等功能。
+
 ## 基础用法
 
 ::: preview

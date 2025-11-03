@@ -1,8 +1,8 @@
 ---
 search: false
 next:
-  link: /components/radioGroup
-  text: RadioGroup 单选框组
+  link: /components/ProCol/
+  text: 响应式栅格布局（ProCol）
 ---
 
 # 基于 Element Plus 二次封装组件库
