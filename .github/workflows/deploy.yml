@@ -56,6 +56,10 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        with:
+          # Upload entire repository
+          path: './packages/docs/.vitepress/dist'
+          
       - name: upload-pages Pages
         uses: actions/upload-pages-artifact@v3
         with:
