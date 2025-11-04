@@ -17,8 +17,8 @@ import {
   ElTimePicker,
 } from 'element-plus'
 
-import ProElementPlus from 'pro-element-plus'
-import 'pro-element-plus/dist/index.css'
+import ProElementPlus from '@coderhd/pro-element-plus'
+import '@coderhd/pro-element-plus/dist/index.css'
 
 // 导入elm样式
 import 'element-plus/theme-chalk/src/base.scss'

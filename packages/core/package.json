@@ -1,5 +1,5 @@
 {
-  "name": "pro-element-plus",
+  "name": "@coderhd/pro-element-plus",
   "version": "1.0.0",
   "description": "Components library bu Vue3 + TS",
   "type": "module",
@@ -31,8 +31,15 @@
     "move-style": "test -f 'dist/es/index.css' && mv 'dist/es/index.css' 'dist/index.css'",
     "remove-dist": "rimraf dist"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "pro-element-plus",
+    "element-plus",
+    "components",
+    "pro-components",
+    "vue3组件库",
+    "二次封装element-plus"
+  ],
+  "author": "hedong433664",
   "license": "ISC",
   "packageManager": "pnpm@10.6.5",
   "devDependencies": {

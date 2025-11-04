@@ -23,8 +23,8 @@
 import { ElDatePicker } from 'element-plus'
 import { computed, ref } from 'vue'
 
-import type { ProFormFields } from 'pro-element-plus'
-import { ProSearchForm } from 'pro-element-plus'
+import type { ProFormFields } from '@coderhd/pro-element-plus'
+import { ProSearchForm } from '@coderhd/pro-element-plus'
 
 const form = ref({
   name: '',

@@ -10,7 +10,7 @@ next:
 ## 安装
 
 ```bash
-npm i pro-element-plus --save
+npm i @coderhd/pro-element-plus --save
 ```
 
 ## 开始使用
@@ -22,9 +22,9 @@ Pro Element Plus 提供了基于 ES Module 的开箱即用的 Element Plus 二�
 ```js
 import { createApp } from 'vue'
 // 引入所有组件
-import ProElementPlus from 'pro-element-plus'
+import ProElementPlus from '@coderhd/pro-element-plus'
 // 引入样式
-import 'pro-element-plus/dist/index.css'
+import '@coderhd/pro-element-plus/dist/index.css'
 
 import App from './App.vue'
 // 全局使用
@@ -40,8 +40,8 @@ createApp(App).use(ProElementPlus).mount('#app')
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ProForm } from 'pro-element-plus'
-import type { ProFormFields } from 'pro-element-plus'
+import { ProForm } from '@coderhd/pro-element-plus'
+import type { ProFormFields } from '@coderhd/pro-element-plus'
 
 const form = ref({
   name: '',

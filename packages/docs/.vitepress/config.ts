@@ -13,7 +13,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '开始使用', link: '/get-started' },
-      { text: '组件', link: '/components/col/index.md' },
+      { text: '组件', link: '/components/ProCol/index.md' },
     ],
     search: {
       provider: 'local',

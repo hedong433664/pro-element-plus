@@ -7,7 +7,7 @@
     "dev": "pnpm --filter @pro-element-plus/play dev",
     "docs:dev": "pnpm --filter @pro-element-plus/docs dev",
     "docs:build": "pnpm --filter @pro-element-plus/docs build",
-    "build": "pnpm --filter pro-element-plus build",
+    "build": "pnpm --filter @coderhd/pro-element-plus build",
     "lint": "eslint . --fix"
   },
   "keywords": [],
@@ -17,7 +17,7 @@
   "dependencies": {
     "@pro-element-plus/components": "workspace:^",
     "@pro-element-plus/utils": "workspace:^",
-    "pro-element-plus": "workspace:*"
+    "@coderhd/pro-element-plus": "workspace:*"
   },
   "devDependencies": {
     "@element-plus/icons-vue": "^2.3.2",

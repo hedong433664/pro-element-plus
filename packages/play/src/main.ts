@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import ProElementPlus from 'pro-element-plus'
+import ProElementPlus from '@coderhd/pro-element-plus'
 import { ElButton, ElInput, ElInputNumber, ElSelect } from 'element-plus'
-import 'pro-element-plus/dist/index.css'
+import '@coderhd/pro-element-plus/dist/index.css'
 
 const app = createApp(App)
 

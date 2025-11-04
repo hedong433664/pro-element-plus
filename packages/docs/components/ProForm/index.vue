@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { ProFormFields } from 'pro-element-plus'
+import type { ProFormFields } from '@coderhd/pro-element-plus'
 import type { FormInstance } from 'element-plus'
 
 const form = ref({})
