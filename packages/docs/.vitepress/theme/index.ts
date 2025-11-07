@@ -20,26 +20,6 @@ import {
 import ProElementPlus from '@coderhd/pro-element-plus'
 import '@coderhd/pro-element-plus/dist/index.css'
 
-// 导入elm样式
-import 'element-plus/theme-chalk/src/base.scss'
-import 'element-plus/theme-chalk/src/form.scss'
-import 'element-plus/theme-chalk/src/form-item.scss'
-import 'element-plus/theme-chalk/src/row.scss'
-import 'element-plus/theme-chalk/src/col.scss'
-import 'element-plus/theme-chalk/src/button.scss'
-import 'element-plus/theme-chalk/src/divider.scss'
-import 'element-plus/theme-chalk/src/input.scss'
-import 'element-plus/theme-chalk/src/input-number.scss'
-import 'element-plus/theme-chalk/src/switch.scss'
-import 'element-plus/theme-chalk/src/select.scss'
-import 'element-plus/theme-chalk/src/checkbox.scss'
-import 'element-plus/theme-chalk/src/checkbox-group.scss'
-import 'element-plus/theme-chalk/src/radio.scss'
-import 'element-plus/theme-chalk/src/radio-group.scss'
-import 'element-plus/theme-chalk/src/date-picker-panel.scss'
-import 'element-plus/theme-chalk/src/date-picker.scss'
-import 'element-plus/theme-chalk/src/time-picker.scss'
-
 import '@vitepress-demo-preview/component/dist/style.css'
 import './index.scss'
 

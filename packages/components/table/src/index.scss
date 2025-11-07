@@ -1,0 +1,16 @@
+.pro-table {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  :deep(.pro-table__header) {
+    color: #606266;
+    .el-table__cell {
+      background-color: #f0f2f5;
+    }
+  }
+  &__pagination {
+    flex: 1;
+    display: flex;
+    justify-content: end;
+  }
+}

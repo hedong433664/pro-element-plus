@@ -16,15 +16,34 @@
       :init-search="false"
       @search="handleSearch"
     />
+
+    <pro-table
+      ref="tableRef"
+      :data="data"
+      :columns="columns"
+      :height="500"
+      border
+      stripe
+      highlight-current-row
+      show-summary
+      :total="data.length"
+      @row-click="(row) => console.log(row)"
+      @pagination-change="(n, s) => console.log(n, s)"
+    >
+      <template #nameSlot="{ row }">
+        {{ row.name + 123 }}
+      </template>
+      <template #append>123</template>
+    </pro-table>
   </div>
 </template>
 
 <script setup lang="tsx">
 import { ElDatePicker } from 'element-plus'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
-import type { ProFormFields } from '@coderhd/pro-element-plus'
-import { ProSearchForm } from '@coderhd/pro-element-plus'
+import type { ProFormFields, ProTableColumn } from '@coderhd/pro-element-plus'
+import { ProSearchForm, ProTable } from '@coderhd/pro-element-plus'
 
 const form = ref({
   name: '',
@@ -44,6 +63,9 @@ const fields = computed<ProFormFields>(() => [
     componentSlots: {
       append: () => [<span>后置</span>],
     },
+    colProps: {
+      span: 6,
+    },
     // rules: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
   },
   {
@@ -54,6 +76,9 @@ const fields = computed<ProFormFields>(() => [
       placeholder: '请输入年龄',
       min: 0,
       max: 100,
+    },
+    colProps: {
+      span: 6,
     },
   },
   {
@@ -74,6 +99,9 @@ const fields = computed<ProFormFields>(() => [
         },
       ],
     },
+    colProps: {
+      span: 6,
+    },
   },
   {
     prop: 'birthday',
@@ -83,6 +111,9 @@ const fields = computed<ProFormFields>(() => [
       return (
         <ElDatePicker v-model={form.value.birthday} placeholder="请选择生日" />
       )
+    },
+    colProps: {
+      span: 6,
     },
   },
   {
@@ -95,6 +126,9 @@ const fields = computed<ProFormFields>(() => [
     componentSlots: {
       default: () => [<span>自定义按钮</span>],
     },
+    colProps: {
+      span: 6,
+    },
   },
 ])
 
@@ -103,17 +137,65 @@ const handleSearch = () => {
   // eslint-disable-next-line no-console
   console.log(form.value)
 }
+
+const data = ref<any>([])
+
+const tableRef = ref<InstanceType<typeof ProTable>>()
+const columns = computed<ProTableColumn[]>(() => [
+  {
+    prop: 'name',
+    label: '姓名',
+  },
+  {
+    prop: 'age',
+    label: '年龄',
+  },
+  {
+    prop: 'sex',
+    label: '性别',
+  },
+  {
+    prop: 'birthday',
+    label: '生日',
+  },
+  {
+    prop: 'action',
+    label: '操作',
+    cellSlots: {
+      default: () => {
+        return (
+          <div>
+            <el-button type="primary" text>
+              编辑
+            </el-button>
+            <el-button type="danger" text>
+              删除
+            </el-button>
+          </div>
+        )
+      },
+      header: () => '自定义header',
+    },
+  },
+])
+
+onMounted(() => {
+  data.value = new Array(100).fill(0).map((_, i) => ({
+    name: `姓名${i}`,
+    age: i,
+    sex: i % 2 === 0 ? '1' : '2',
+    birthday: '2023-01-01',
+  }))
+
+  tableRef.value?.setCurrentRow(data.value[4])
+  setTimeout(() => {
+    tableRef.value?.scrollTo({
+      left: 0,
+      top: 300,
+      behavior: 'smooth',
+    })
+  }, 2000)
+})
 </script>
 
-<style lang="scss" scoped>
-.el-col {
-  margin-bottom: 10px;
-}
-.item {
-  height: 60px;
-  line-height: 60px;
-  text-align: center;
-  border-radius: 5px;
-  background: var(--el-color-primary-light-5);
-}
-</style>
+<style lang="scss" scoped></style>

@@ -13,18 +13,12 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
-    ElCol: typeof import('element-plus/es')['ElCol']
-    ElRow: typeof import('element-plus/es')['ElRow']
-    ElTable: typeof import('element-plus/es')['ElTable']
-    ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ElSwitch: typeof import('element-plus/es')['ElSwitch']
   }
 }
 
 // For TSX support
 declare global {
   const ElButton: typeof import('element-plus/es')['ElButton']
-  const ElCol: typeof import('element-plus/es')['ElCol']
-  const ElRow: typeof import('element-plus/es')['ElRow']
-  const ElTable: typeof import('element-plus/es')['ElTable']
-  const ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+  const ElSwitch: typeof import('element-plus/es')['ElSwitch']
 }

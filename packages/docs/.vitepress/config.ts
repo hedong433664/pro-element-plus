@@ -3,12 +3,48 @@ import {
   containerPreview,
   componentPreview,
 } from '@vitepress-demo-preview/plugin'
+import path from 'path'
+import ElementPlus from 'unplugin-element-plus/vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'Pro Element Plus',
   description: '基于 Element Plus 二次封装组件库',
   base: '/pro-element-plus/',
+  vite: {
+    plugins: [
+      ElementPlus({
+        useSource: true,
+      }),
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+      }),
+      Components({
+        resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
+      }),
+      vueJsx(),
+    ],
+    server: {
+      port: 3001,
+      host: '0.0.0.0',
+    },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'theme'),
+      },
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use "@/element/index.scss" as *;`,
+        },
+      },
+    },
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -41,6 +77,13 @@ export default defineConfig({
             text: 'ProSearchForm 查询表单',
             link: 'components/ProSearchForm/index.md',
           },
+        ],
+      },
+      {
+        text: '数据展示',
+        collapsed: false,
+        items: [
+          { text: 'ProTable 表格', link: 'components/ProTable/index.md' },
         ],
       },
     ],

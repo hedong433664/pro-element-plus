@@ -5,6 +5,10 @@ description: ProSearchForm 组件文档
 prev:
   link: /components/ProForm/
   text: 表单（ProForm）
+
+next:
+  link: /components/ProTable/
+  text: 表格（ProTable）
 ---
 
 # ProSearchForm 查询表单
