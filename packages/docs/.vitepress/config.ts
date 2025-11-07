@@ -4,10 +4,6 @@ import {
   componentPreview,
 } from '@vitepress-demo-preview/plugin'
 import path from 'path'
-import ElementPlus from 'unplugin-element-plus/vite'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 // https://vitepress.dev/reference/site-config
@@ -16,18 +12,7 @@ export default defineConfig({
   description: '基于 Element Plus 二次封装组件库',
   base: '/pro-element-plus/',
   vite: {
-    plugins: [
-      ElementPlus({
-        useSource: true,
-      }),
-      AutoImport({
-        resolvers: [ElementPlusResolver()],
-      }),
-      Components({
-        resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
-      }),
-      vueJsx(),
-    ],
+    plugins: [vueJsx()],
     server: {
       port: 3001,
       host: '0.0.0.0',
