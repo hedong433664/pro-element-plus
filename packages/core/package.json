@@ -1,8 +1,7 @@
 {
   "name": "@coderhd/pro-element-plus",
-  "version": "1.1.0",
-  "description": "Components library bu Vue3 + TS",
-  "type": "module",
+  "version": "1.1.1",
+  "description": "Components library built with Vue3 + TypeScript",
   "main": "./dist/umd/index.umd.cjs",
   "module": "./dist/es/index.js",
   "types": "./dist/types/core/index.d.ts",
@@ -15,13 +14,10 @@
       "require": "./dist/umd/index.umd.cjs",
       "types": "./dist/types/core/index.d.ts"
     },
-    "./dist/": {
-      "import": "./dist/",
-      "require": "./dist/"
-    }
+    "./style": "./dist/index.css"
   },
   "sideEffects": [
-    "./dist/index.css"
+    "*.css"
   ],
   "scripts": {
     "build": "run-s remove-dist build-only move-style",
@@ -36,13 +32,39 @@
     "element-plus",
     "components",
     "pro-components",
-    "vue3组件库",
-    "二次封装element-plus"
+    "vue3",
+    "typescript",
+    "ui-library"
   ],
   "author": "hedong433664",
-  "license": "ISC",
-  "packageManager": "pnpm@10.6.5",
-  "devDependencies": {
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hedong433664/pro-element-plus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hedong433664/pro-element-plus/issues"
+  },
+  "homepage": "https://hedong433664.github.io/pro-element-plus/",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=7.0.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0",
+    "element-plus": "^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "element-plus": {
+      "optional": false
+    }
+  },
+  "dependencies": {
     "@pro-element-plus/components": "workspace:*"
-  }
+  },
+  "devDependencies": {},
+  "packageManager": "pnpm@10.6.5"
 }
