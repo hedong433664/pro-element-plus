@@ -1,7 +1,8 @@
 {
   "name": "@coderhd/pro-element-plus",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Components library built with Vue3 + TypeScript",
+  "type": "module",
   "main": "./dist/umd/index.umd.cjs",
   "module": "./dist/es/index.js",
   "types": "./dist/types/core/index.d.ts",
@@ -14,10 +15,13 @@
       "require": "./dist/umd/index.umd.cjs",
       "types": "./dist/types/core/index.d.ts"
     },
-    "./style": "./dist/index.css"
+    "./dist/": {
+      "import": "./dist/",
+      "require": "./dist/"
+    }
   },
   "sideEffects": [
-    "*.css"
+    "./dist/index.css"
   ],
   "scripts": {
     "build": "run-s remove-dist build-only move-style",
