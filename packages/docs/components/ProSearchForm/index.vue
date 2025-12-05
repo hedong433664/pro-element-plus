@@ -39,9 +39,7 @@ const fields = computed<ProFormFields>(() => [
     component: 'ElInputNumber',
     componentProps: {
       placeholder: '请输入年龄',
-      style: {
-        width: '100%',
-      },
+      style: { width: '100%' },
     },
     colProps: {
       span: 8,
@@ -54,14 +52,8 @@ const fields = computed<ProFormFields>(() => [
     componentProps: {
       placeholder: '请选择性别',
       options: [
-        {
-          label: '男',
-          value: '1',
-        },
-        {
-          label: '女',
-          value: '2',
-        },
+        { label: '男', value: '1' },
+        { label: '女', value: '2' },
       ],
     },
     colProps: {

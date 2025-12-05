@@ -19,6 +19,14 @@ prev:
 demo-preview=../../components/ProTable/index.vue
 :::
 
+## 查询表格
+
+配合 `pro-search-form` 组件使用，实现查询表格功能
+
+::: preview
+demo-preview=../../components/ProTable/search-table.vue
+:::
+
 ## Attributes
 
 > 更多属性参考 [ElementPlus Table Attributes](https://element-plus.org/zh-CN/component/table#table-%E5%B1%9E%E6%80%A7)

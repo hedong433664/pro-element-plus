@@ -22,23 +22,25 @@
 </template>
 
 <script setup lang="tsx">
-import { ref } from 'vue'
-
+import { computed, ref } from 'vue'
 import { ProTable } from '@coderhd/pro-element-plus'
 import type { ProTableColumn } from '@coderhd/pro-element-plus'
 
 const proTableRef = ref<InstanceType<typeof ProTable>>()
 const data = ref<any>(
-  Array.from({ length: 30 }).fill({
-    name: '张三',
-    age: 18,
-    sex: '男',
-    address: '北京市',
-  }),
+  Array.from({ length: 20 }).map((_, index) => ({
+    index: index + 1,
+    name: '姓名',
+    age: Math.floor(Math.random() * 100),
+    sex: Math.random() > 0.5 ? '男' : '女',
+    address: '北京市海淀区',
+    desc: '很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的描述',
+  })),
 )
 const hidePagination = ref<boolean>(false)
 const total = ref<number>(100)
-const columns: ProTableColumn[] = [
+
+const columns = computed<ProTableColumn[]>(() => [
   {
     label: '姓名',
     prop: 'name',
@@ -57,6 +59,11 @@ const columns: ProTableColumn[] = [
   {
     label: '地址',
     prop: 'address',
+  },
+  {
+    label: '描述',
+    prop: 'desc',
+    showOverflowTooltip: true,
   },
   {
     label: '操作',
@@ -84,7 +91,7 @@ const columns: ProTableColumn[] = [
       header: () => '自定义',
     },
   },
-]
+])
 
 const handlePagination = (page: number, pageSize: number) => {
   // eslint-disable-next-line no-console
