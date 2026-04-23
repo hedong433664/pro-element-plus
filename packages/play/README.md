@@ -1,4 +1,4 @@
-# @@coderhd/pro-element-plus/play
+# @pro-element-plus/play
 
 ## 包说明
 
@@ -26,8 +26,8 @@ play
 常用命令：
 
 ```bash
-pnpm --filter @@coderhd/pro-element-plus/play dev
-pnpm --filter @@coderhd/pro-element-plus/play build
+pnpm --filter @pro-element-plus/play dev
+pnpm --filter @pro-element-plus/play build
 ```
 
 本包通常会直接 alias 到工作区源码，适合联调 `components` 与 `core` 的改动。

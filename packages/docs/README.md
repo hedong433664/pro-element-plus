@@ -1,4 +1,4 @@
-# @@coderhd/pro-element-plus/docs
+# @pro-element-plus/docs
 
 ## 包说明
 
@@ -28,8 +28,8 @@ docs
 常用命令：
 
 ```bash
-pnpm --filter @@coderhd/pro-element-plus/docs dev
-pnpm --filter @@coderhd/pro-element-plus/docs build
+pnpm --filter @pro-element-plus/docs dev
+pnpm --filter @pro-element-plus/docs build
 ```
 
 文档示例默认依赖工作区里的 `@coderhd/pro-element-plus`，适合随着组件更新同步维护。

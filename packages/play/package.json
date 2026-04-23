@@ -24,7 +24,6 @@
     "unplugin-element-plus": "^0.11.2",
     "unplugin-vue-components": "^31.0.0",
     "vite": "^8.0.1",
-    "vue-tsc": "^3.2.5",
-    "@coderhd/pro-element-plus": "workspace:*"
+    "vue-tsc": "^3.2.5"
   }
 }

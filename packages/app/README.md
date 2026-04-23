@@ -1,4 +1,4 @@
-# @@coderhd/pro-element-plus/app
+# @pro-element-plus/app
 
 ## 包说明
 
@@ -26,8 +26,8 @@ app
 常用命令：
 
 ```bash
-pnpm --filter @@coderhd/pro-element-plus/app dev
-pnpm --filter @@coderhd/pro-element-plus/app build
+pnpm --filter @pro-element-plus/app dev
+pnpm --filter @pro-element-plus/app build
 ```
 
 开发时默认依赖工作区里的 `@coderhd/pro-element-plus`，适合联调组件库改动。

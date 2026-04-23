@@ -23,7 +23,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@@coderhd/pro-element-plus/components': resolve(
+      '@coderhd/pro-element-plus/components': resolve(
         __dirname,
         '../components',
       ),

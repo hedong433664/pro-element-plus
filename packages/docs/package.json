@@ -1,5 +1,5 @@
 {
-  "name": "@@coderhd/pro-element-plus/docs",
+  "name": "@pro-element-plus/docs",
   "version": "1.0.0",
   "private": true,
   "description": "@coderhd/pro-element-plus component library documentation",
@@ -14,8 +14,7 @@
   },
   "peerDependencies": {
     "vue": "^3.4.0",
-    "element-plus": "^2.7.0",
-    "@coderhd/pro-element-plus": "workspace:*"
+    "element-plus": "^2.7.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",
@@ -27,8 +26,7 @@
     "sass": "^1.98.0",
     "typescript": "^5.9.3",
     "vitepress": "^1.5.0",
-    "vue": "^3.5.30",
-    "@coderhd/pro-element-plus": "workspace:*"
+    "vue": "^3.5.30"
   },
   "license": "ISC",
   "packageManager": "pnpm@10.6.5"

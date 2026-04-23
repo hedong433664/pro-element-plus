@@ -58,7 +58,7 @@ const repeatedScopedPackagePattern = new RegExp(
   'g',
 )
 const scopedPackagePattern = new RegExp(
-  `@[\\w.-]+/${escapedPackageBaseName}`,
+  `(?<![@\\w.-])@[\\w.-]+/${escapedPackageBaseName}(?![\\w.-])`,
   'g',
 )
 const barePackagePattern = new RegExp(
@@ -71,16 +71,21 @@ const isLegacyPackageName = (name) =>
   name === PACKAGE_NAME ||
   name.endsWith(`/${packageBaseName}`)
 
-const updateDependencyMap = (deps = {}) => {
+const updateDependencyMap = (deps = {}, { ensurePresent = false } = {}) => {
   const nextDeps = { ...deps }
+  let hadLegacyEntry = false
 
   for (const name of Object.keys(nextDeps)) {
     if (isLegacyPackageName(name)) {
       delete nextDeps[name]
+      hadLegacyEntry = true
     }
   }
 
-  nextDeps[PACKAGE_NAME] = 'workspace:*'
+  if (ensurePresent || hadLegacyEntry) {
+    nextDeps[PACKAGE_NAME] = 'workspace:*'
+  }
+
   return nextDeps
 }
 
@@ -144,7 +149,9 @@ for (const packagePath of workspacePackageJsonPaths) {
     pkg.name = PACKAGE_NAME
   } else {
     if (pkg.dependencies) {
-      pkg.dependencies = updateDependencyMap(pkg.dependencies)
+      pkg.dependencies = updateDependencyMap(pkg.dependencies, {
+        ensurePresent: true,
+      })
     }
 
     if (pkg.devDependencies) {
