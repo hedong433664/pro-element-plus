@@ -1,0 +1,45 @@
+{
+  "name": "pro-element-plus-monorepo",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Monorepo：基于 Element Plus 的二次封装组件库（pro-element-plus）",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build": "pnpm --filter ./packages/core run build",
+    "dev": "pnpm --filter ./packages/play run dev",
+    "start": "pnpm run build && pnpm --filter ./packages/app run dev",
+    "docs:dev": "pnpm --filter ./packages/docs run dev",
+    "docs:build": "pnpm run build && pnpm --filter ./packages/docs run build",
+    "release:check": "node scripts/release-check.mjs",
+    "release:version": "node scripts/release-version.mjs",
+    "release:build": "pnpm --filter ./packages/core run build",
+    "release:publish": "node scripts/release-publish.mjs",
+    "release:publish:dry": "node scripts/release-publish.mjs --dry-run",
+    "sync:package-name": "node scripts/sync-package-name.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^22.15.3",
+    "@vitejs/plugin-vue-jsx": "^5.1.5",
+    "@vitepress-demo-preview/plugin": "^1.4.1",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/tsconfig": "^0.9.0",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-vue": "^10.8.0",
+    "globals": "^17.4.0",
+    "jiti": "^2.6.1",
+    "lodash-es": "^4.17.23",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.0",
+    "vue": "^3.5.30"
+  },
+  "packageManager": "pnpm@10.6.5",
+  "dependencies": {
+    "@vitepress-demo-preview/component": "^2.6.2"
+  }
+}

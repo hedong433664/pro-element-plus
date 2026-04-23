@@ -1,0 +1,35 @@
+{
+  "name": "@@coderhd/pro-element-plus/docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "@coderhd/pro-element-plus component library documentation",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev .",
+    "build": "vitepress build .",
+    "preview": "vitepress preview ."
+  },
+  "dependencies": {
+    "@coderhd/pro-element-plus": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.0",
+    "element-plus": "^2.7.0",
+    "@coderhd/pro-element-plus": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "@vitejs/plugin-vue": "^6.0.5",
+    "@vitejs/plugin-vue-jsx": "^4.1.1",
+    "@vitepress-demo-preview/plugin": "^1.2.3",
+    "@vue/tsconfig": "^0.9.0",
+    "element-plus": "^2.13.5",
+    "sass": "^1.98.0",
+    "typescript": "^5.9.3",
+    "vitepress": "^1.5.0",
+    "vue": "^3.5.30",
+    "@coderhd/pro-element-plus": "workspace:*"
+  },
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.5"
+}

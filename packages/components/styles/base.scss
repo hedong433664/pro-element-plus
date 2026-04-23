@@ -1,0 +1,26 @@
+$pro-header-size-large: 18px;
+$pro-header-size-default: 16px;
+$pro-header-size-small: 14px;
+
+$pro-table-header-text-color: #000000;
+$pro-table-row-hover-bg-color: #f5f7fa;
+$pro-table-header-bg-color: #f5f7fa;
+
+$pro-table-header-text-color-dark: #ffffff;
+$pro-table-row-hover-bg-color-dark: #2a2a2a;
+$pro-table-header-bg-color-dark: #2a2a2a;
+
+:root {
+  --pro-header-size-large: #{$pro-header-size-large};
+  --pro-header-size-default: #{$pro-header-size-default};
+  --pro-header-size-small: #{$pro-header-size-small};
+  --pro-table-header-text-color: #{$pro-table-header-text-color};
+  --pro-table-row-hover-bg-color: #{$pro-table-row-hover-bg-color};
+  --pro-table-header-bg-color: #{$pro-table-header-bg-color};
+}
+
+.dark:root {
+  --pro-table-header-text-color: #{$pro-table-header-text-color-dark};
+  --pro-table-row-hover-bg-color: #{$pro-table-row-hover-bg-color-dark};
+  --pro-table-header-bg-color: #{$pro-table-header-bg-color-dark};
+}
