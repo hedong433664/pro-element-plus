@@ -5,10 +5,10 @@ permissions:
   contents: read
   pages: write
   id-token: write
-on:
+于:
   push:
-    branches:
-      - master
+    分支:
+      - main
 
 jobs:
   test:
