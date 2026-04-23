@@ -1,0 +1,39 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "types": [
+      "vite/client"
+    ],
+    "paths": {
+      "@coderhd/pro-element-plus": [
+        "../core/index.ts"
+      ],
+      "@coderhd/pro-element-plus/es/*/style": [
+        "../components/*/style/index.ts"
+      ],
+      "@coderhd/pro-element-plus/es/*": [
+        "../components/*/index.ts"
+      ],
+      "@coderhd/pro-element-plus/resolver": [
+        "../core/resolver.ts"
+      ],
+      "@/*": [
+        "./src/*"
+      ],
+    },
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.vue",
+    "**/*.d.ts"
+  ]
+}
