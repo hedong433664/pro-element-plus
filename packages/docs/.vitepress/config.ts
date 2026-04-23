@@ -5,11 +5,12 @@ import {
 } from '@vitepress-demo-preview/plugin'
 import path from 'path'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import { DOCS_BASE } from '../../../scripts/package-config.mjs'
 
 export default defineConfig({
   title: 'Pro Element Plus',
   description: 'A component library built on top of Element Plus.',
-  base: '/@coderhd/pro-element-plus/',
+  base: DOCS_BASE,
   vite: {
     plugins: [vueJsx()],
     server: {

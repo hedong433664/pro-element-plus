@@ -10,7 +10,7 @@
     "dev": "pnpm --filter ./packages/play run dev",
     "start": "pnpm run build && pnpm --filter ./packages/app run dev",
     "docs:dev": "pnpm --filter ./packages/docs run dev",
-    "docs:build": "pnpm run build && pnpm --filter ./packages/docs run build",
+    "docs:build": "pnpm --filter ./packages/docs run build",
     "release:check": "node scripts/release-check.mjs",
     "release:version": "node scripts/release-version.mjs",
     "release:build": "pnpm --filter ./packages/core run build",

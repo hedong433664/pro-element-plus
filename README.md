@@ -104,12 +104,14 @@ pnpm build
 仓库根目录提供了 `.env` 作为统一包名配置入口，当前支持：
 
 ```ini
-PRO_EP_PACKAGE_NAME=pro-element-plus
+PRO_EP_PACKAGE_NAME=@coderhd/pro-element-plus
 PRO_EP_PACKAGE_DIR=./packages/core
+PRO_EP_DOCS_BASE=/
 ```
 
 - `PRO_EP_PACKAGE_NAME`：组件库对外发布与示例中使用的包名
 - `PRO_EP_PACKAGE_DIR`：实际执行发布的子包目录
+- `PRO_EP_DOCS_BASE`：文档站点的 VitePress `base`，本地开发通常使用 `/`，GitHub Pages 构建时会覆盖为 `/<仓库名>/`
 
 当需要在 `pro-element-plus` 与 `@scope/pro-element-plus` 之间切换时，推荐流程如下：
 

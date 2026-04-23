@@ -55,9 +55,15 @@ export const PACKAGE_DIR =
   envConfig.PRO_EP_PACKAGE_DIR ||
   './packages/core'
 
+export const DOCS_BASE =
+  process.env.PRO_EP_DOCS_BASE ||
+  envConfig.PRO_EP_DOCS_BASE ||
+  '/'
+
 export const PACKAGE_CONFIG = {
   PACKAGE_NAME,
   PACKAGE_DIR,
+  DOCS_BASE,
 }
 
 export { envFilePath as packageEnvFilePath, repoRoot as packageConfigRepoRoot }
