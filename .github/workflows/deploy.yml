@@ -48,9 +48,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build pro-element-plus
-        run: npm run build
-
       - name: Build docs
         run: npm run docs:build
 

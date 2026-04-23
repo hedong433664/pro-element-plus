@@ -1,5 +1,5 @@
 import type { ComponentResolver } from 'unplugin-vue-components'
-import { PACKAGE_NAME } from '../../scripts/package-config.mjs'
+import { PACKAGE_NAME } from './package-name'
 
 export interface ProElementPlusResolverOptions {
   /**

@@ -17,6 +17,7 @@ const workspacePackageJsonPaths = [
   path.join(packagesDir, '..', 'play', 'package.json'),
   path.join(packagesDir, '..', 'docs', 'package.json'),
 ]
+const corePackageNameTsPath = path.join(packagesDir, 'package-name.ts')
 
 const textSyncRoots = [
   path.join(packagesDir, '..', 'core'),
@@ -56,7 +57,10 @@ const repeatedScopedPackagePattern = new RegExp(
   `(?:@[\\w.-]+/)+${escapedPackageBaseName}`,
   'g',
 )
-const scopedPackagePattern = new RegExp(`@[\\w.-]+/${escapedPackageBaseName}`, 'g')
+const scopedPackagePattern = new RegExp(
+  `@[\\w.-]+/${escapedPackageBaseName}`,
+  'g',
+)
 const barePackagePattern = new RegExp(
   `(?<![@\\w.-]/)${escapedPackageBaseName}(?![\\w.-])`,
   'g',
@@ -159,6 +163,12 @@ for (const packagePath of workspacePackageJsonPaths) {
   writeJson(packagePath, pkg)
   console.log(`已同步包名配置：${packagePath}`)
 }
+
+fs.writeFileSync(
+  corePackageNameTsPath,
+  `export const PACKAGE_NAME = ${JSON.stringify(PACKAGE_NAME)}\n`,
+)
+console.log(`已同步包名常量：${corePackageNameTsPath}`)
 
 const textSyncFiles = [...new Set(textSyncRoots.flatMap(collectTextSyncFiles))]
 
