@@ -4,10 +4,12 @@ import components from './registry'
 export { ProHeader } from '../components/header'
 export { ProCol } from '../components/col'
 export { ProTable } from '../components/table'
+export { ProForm } from '../components/form'
 
 export * from '../components/header'
 export * from '../components/col'
 export * from '../components/table'
+export * from '../components/form'
 
 const installer = makeInstaller(components)
 

@@ -1,4 +1,9 @@
-import type { ProCol, ProHeader, ProTable } from '@coderhd/pro-element-plus'
+import type {
+  ProCol,
+  ProForm,
+  ProHeader,
+  ProTable,
+} from '@coderhd/pro-element-plus'
 
 export {}
 
@@ -7,5 +12,6 @@ declare module 'vue' {
     ProHeader: typeof ProHeader
     ProCol: typeof ProCol
     ProTable: typeof ProTable
+    ProForm: typeof ProForm
   }
 }

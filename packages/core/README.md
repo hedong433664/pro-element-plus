@@ -2,13 +2,14 @@
 
 ## 介绍
 
-`@coderhd/pro-element-plus` 是一个基于 `Vue 3` 与 `Element Plus` 的二次封装组件库，提供更贴近业务场景的组件能力，同时尽量保持与 `Element Plus` 一致的使用习惯。
+`@coderhd/pro-element-plus` 是一个基于 `Vue 3` 与 `Element Plus` 的业务组件库，当前提供：
 
-当前已提供的组件包括：
-
+- `ProForm`
+- `ProTable`
 - `ProHeader`
 - `ProCol`
-- `ProTable`
+
+组件库尽量保持与 `Element Plus` 一致的使用习惯，同时针对常见后台场景提供配置式能力。
 
 ## 安装
 
@@ -23,8 +24,6 @@ npm install @coderhd/pro-element-plus element-plus
 ```
 
 ## 全量引入
-
-适合快速接入或中后台项目初始化阶段使用。
 
 ```ts
 import { createApp } from 'vue'
@@ -41,20 +40,12 @@ createApp(App).use(ProElementPlus).mount('#app')
 ### 手动按需引入组件
 
 ```ts
-import { ProTable } from '@coderhd/pro-element-plus'
-import '@coderhd/pro-element-plus/es/table/style'
-```
-
-或者使用 `style/css` 入口：
-
-```ts
-import { ProTable } from '@coderhd/pro-element-plus'
+import { ProForm, ProTable } from '@coderhd/pro-element-plus'
+import '@coderhd/pro-element-plus/es/form/style'
 import '@coderhd/pro-element-plus/es/table/style/css'
 ```
 
-### 使用自动导入解析器
-
-如果你使用 `unplugin-vue-components`，可以搭配 `@coderhd/pro-element-plus/resolver` 实现组件与样式自动导入。
+### 配合自动导入解析器
 
 ```ts
 import { defineConfig } from 'vite'
@@ -86,28 +77,92 @@ import '@coderhd/pro-element-plus/style.css'
 该入口会包含：
 
 - 组件库自身样式
-- 当前组件依赖的 Element Plus 样式
-
-如果项目没有单独引入 `el-table`、`el-pagination` 等样式，直接使用这个入口也可以正常工作。
+- 当前组件依赖的 `Element Plus` 样式
 
 ### 按需样式
 
-组件子路径支持两种样式入口：
+```ts
+import '@coderhd/pro-element-plus/es/form/style'
+import '@coderhd/pro-element-plus/es/form/style/css'
+import '@coderhd/pro-element-plus/es/table/style'
+```
 
-- `@coderhd/pro-element-plus/es/<name>/style`
-- `@coderhd/pro-element-plus/es/<name>/style/css`
+## ProForm 说明
 
-例如：
+`ProForm` 基于 `el-form`、`el-row` 与 `ProCol` 封装，支持通过 `fields` 快速描述表单结构。
+
+### 基础示例
+
+```vue
+<template>
+  <ProForm :model="model" :fields="fields" label-width="88px" />
+</template>
+
+<script setup lang="ts">
+import { computed, reactive } from 'vue'
+import { ElInput } from 'element-plus'
+import {
+  provideProFormComponents,
+  type ProFormField,
+} from '@coderhd/pro-element-plus'
+
+interface FormModel {
+  name: string
+}
+
+provideProFormComponents({ ElInput })
+
+const model = reactive<FormModel>({
+  name: '',
+})
+
+const fields = computed((): ProFormField<FormModel>[] => [
+  {
+    prop: 'name',
+    label: '姓名',
+    component: 'ElInput',
+    componentProps: {
+      placeholder: '请输入姓名',
+      clearable: true,
+    },
+  },
+])
+</script>
+```
+
+### 字符串组件名与注入
+
+当 `fields` 中使用字符串组件名时，`ProForm` 会优先从注入表中解析组件：
 
 ```ts
-import '@coderhd/pro-element-plus/es/header/style'
-import '@coderhd/pro-element-plus/es/col/style'
-import '@coderhd/pro-element-plus/es/table/style/css'
+import { ElInput, ElSelect } from 'element-plus'
+import { provideProFormComponents } from '@coderhd/pro-element-plus'
+
+provideProFormComponents({
+  ElInput,
+  ElSelect,
+})
+```
+
+如果需要在 `main.ts` 里统一配置，请直接使用：
+
+```ts
+import { createApp } from 'vue'
+import { ElInput, ElSelect } from 'element-plus'
+import App from './App.vue'
+import { proFormComponentsKey } from '@coderhd/pro-element-plus'
+
+const app = createApp(App)
+
+app.provide(proFormComponentsKey, {
+  ElInput,
+  ElSelect,
+})
 ```
 
 ## TypeScript 支持
 
-如果项目使用自动导入或全局组件类型，建议在 `tsconfig.json` 中补充：
+如果项目使用自动导入或全局组件类型，建议在 `tsconfig.json` 中补上：
 
 ```json
 {
@@ -119,33 +174,32 @@ import '@coderhd/pro-element-plus/es/table/style/css'
 
 ## 导出能力
 
-当前包提供以下几类导出：
-
 ### 根入口
 
 ```ts
 import ProElementPlus, {
+  ProForm,
+  ProTable,
   ProHeader,
   ProCol,
-  ProTable,
 } from '@coderhd/pro-element-plus'
 ```
 
 ### 组件子路径
 
 ```ts
-import { ProTable } from '@coderhd/pro-element-plus/es/table'
+import { ProForm } from '@coderhd/pro-element-plus/es/form'
 import type {
-  ProTableColumn,
-  ProTableProps,
-} from '@coderhd/pro-element-plus/es/table'
+  ProFormField,
+  ProFormInstance,
+} from '@coderhd/pro-element-plus/es/form'
 ```
 
 ### 样式子路径
 
 ```ts
-import '@coderhd/pro-element-plus/es/table/style'
-import '@coderhd/pro-element-plus/es/table/style/css'
+import '@coderhd/pro-element-plus/es/form/style'
+import '@coderhd/pro-element-plus/es/form/style/css'
 ```
 
 ### 解析器
@@ -154,37 +208,9 @@ import '@coderhd/pro-element-plus/es/table/style/css'
 import { ProElementPlusResolver } from '@coderhd/pro-element-plus/resolver'
 ```
 
-## 基础示例
-
-```vue
-<template>
-  <ProTable :columns="columns" :data="data" />
-</template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import type { ProTableColumn } from '@coderhd/pro-element-plus/es/table'
-
-interface UserRow {
-  name: string
-  age: number
-}
-
-const data = ref<UserRow[]>([
-  { name: '张三', age: 24 },
-  { name: '李四', age: 28 },
-])
-
-const columns: ProTableColumn<UserRow>[] = [
-  { label: '姓名', prop: 'name' },
-  { label: '年龄', prop: 'age' },
-]
-</script>
-```
-
 ## 兼容说明
 
-当前包以以下生态为基础：
+当前包依赖以下生态：
 
 - `vue`
 - `element-plus`

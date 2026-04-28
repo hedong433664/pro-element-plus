@@ -1,13 +1,18 @@
 import { createApp } from 'vue'
 import './styles/index.scss'
-import router from '@/router'
 import App from './App.vue'
+import router from './router'
 
-// import ProElementPlus from '@coderhd/pro-element-plus'
-// import '@coderhd/pro-element-plus/style.css'
+import { proFormComponentsKey } from '@coderhd/pro-element-plus'
+import { ElInput, ElSelect, ElRadioGroup, ElDatePicker } from 'element-plus'
 
 const app = createApp(App)
 
+app.provide(proFormComponentsKey, {
+  ElInput,
+  ElSelect,
+  ElRadioGroup,
+  ElDatePicker,
+})
 app.use(router)
-// app.use(ProElementPlus)
 app.mount('#app')

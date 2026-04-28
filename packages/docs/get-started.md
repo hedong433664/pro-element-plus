@@ -1,13 +1,18 @@
 ---
 search: false
 next:
-  link: /components/ProCol/
+  link: /components/ProCol/index.md
   text: 响应式栅格布局（ProCol）
 ---
 
 # 快速开始
 
-`@coderhd/pro-element-plus` 是一套基于 `Element Plus` 的二次封装组件库，面向 `Vue 3 + TypeScript` 项目使用。
+`@coderhd/pro-element-plus` 是一套基于 `Vue 3` 与 `Element Plus` 的业务组件库，当前提供：
+
+- `ProForm`
+- `ProTable`
+- `ProHeader`
+- `ProCol`
 
 ## 安装
 
@@ -23,7 +28,7 @@ npm install @coderhd/pro-element-plus element-plus
 
 ## 全量引入
 
-适合快速接入或中后台项目初始化阶段。
+适合快速接入或后台项目初始化阶段：
 
 ```ts
 import { createApp } from 'vue'
@@ -77,34 +82,6 @@ import '@coderhd/pro-element-plus/style.css'
 createApp(App).mount('#app')
 ```
 
-### 页面中直接使用
-
-```vue
-<template>
-  <ProTable :columns="columns" :data="data" />
-</template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import type { ProTableColumn } from '@coderhd/pro-element-plus'
-
-interface UserRow {
-  name: string
-  age: number
-}
-
-const data = ref<UserRow[]>([
-  { name: '张三', age: 24 },
-  { name: '李四', age: 28 },
-])
-
-const columns: ProTableColumn<UserRow>[] = [
-  { label: '姓名', prop: 'name' },
-  { label: '年龄', prop: 'age' },
-]
-</script>
-```
-
 ## TypeScript 配置建议
 
 如果你使用自动导入和全局组件类型，推荐在 `tsconfig.json` 中补上：
@@ -119,6 +96,7 @@ const columns: ProTableColumn<UserRow>[] = [
 
 ## 下一步
 
-- 查看 [ProTable](/components/ProTable/index.md) 了解配置式表格用法
+- 查看 [ProForm](/components/ProForm/index.md) 了解配置式表单
+- 查看 [ProTable](/components/ProTable/index.md) 了解配置式表格
 - 查看 [ProHeader](/components/ProHeader/index.md) 了解头部区域组件
-- 查看 [ProCol](/components/ProCol/index.md) 了解响应式栅格布局能力
+- 查看 [ProCol](/components/ProCol/index.md) 了解响应式栅格布局

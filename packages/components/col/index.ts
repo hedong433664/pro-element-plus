@@ -6,4 +6,4 @@ export const ProCol: SFCWithInstall<typeof Col> = withInstall(Col)
 export default ProCol
 
 // 导出类型
-export * from './src/col'
+export * from './src/types'

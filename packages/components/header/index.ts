@@ -6,4 +6,4 @@ export const ProHeader: SFCWithInstall<typeof Header> = withInstall(Header)
 export default ProHeader
 
 // 导出类型
-export * from './src/header'
+export * from './src/types'

@@ -20,9 +20,14 @@ const run = (command, commandArgs, cwd = repoRoot) => {
 }
 
 run('pnpm', ['release:check'])
-run('pnpm', ['release:build'])
 
-const publishArgs = ['publish', '--access', 'public']
+const publishArgs = [
+  'publish',
+  '--access',
+  'public',
+  '--registry',
+  'https://registry.npmjs.org/',
+]
 
 if (isDryRun) {
   publishArgs.push('--dry-run', '--no-git-checks')

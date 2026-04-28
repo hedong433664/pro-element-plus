@@ -20,7 +20,7 @@ import { computed, getCurrentInstance, h } from 'vue'
 import { ElCol } from 'element-plus'
 import { isEmpty } from 'lodash-es'
 
-import type { ProColProps } from './col'
+import type { ProColProps } from './types'
 
 defineOptions({
   name: 'ProCol',

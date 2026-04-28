@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { ElDivider } from 'element-plus'
-import type { ProHeaderProps } from './header'
+import type { ProHeaderProps } from './types'
 
 defineOptions({
   name: 'ProHeader',
