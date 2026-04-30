@@ -1,6 +1,6 @@
 {
   "name": "@coderhd/pro-element-plus",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "基于 Element Plus 的二次封装 Vue 3 组件库",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -76,6 +76,14 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hedong433664/pro-element-plus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hedong433664/pro-element-plus/issues"
+  },
+  "homepage": "https://hedong433664.github.io/pro-element-plus/",
   "devDependencies": {
     "@types/lodash-es": "^4.17.12",
     "@vitejs/plugin-vue": "^6.0.5",

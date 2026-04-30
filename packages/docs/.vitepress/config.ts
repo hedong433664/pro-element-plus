@@ -92,7 +92,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Get Started', link: '/get-started' },
-      { text: 'Components', link: '/components/ProForm/index.md' },
+      { text: 'Components', link: '/components/ProSearchForm/index.md' },
     ],
     search: {
       provider: 'local',
@@ -109,6 +109,7 @@ export default defineConfig({
         items: [
           { text: 'ProCol', link: 'components/ProCol/index.md' },
           { text: 'ProForm', link: 'components/ProForm/index.md' },
+          { text: 'ProSearchForm', link: 'components/ProSearchForm/index.md' },
           { text: 'ProHeader', link: 'components/ProHeader/index.md' },
           { text: 'ProTable', link: 'components/ProTable/index.md' },
         ],

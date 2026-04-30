@@ -2,6 +2,7 @@ import type {
   ProCol,
   ProForm,
   ProHeader,
+  ProSearchForm,
   ProTable,
 } from '@coderhd/pro-element-plus'
 
@@ -13,5 +14,6 @@ declare module 'vue' {
     ProCol: typeof ProCol
     ProTable: typeof ProTable
     ProForm: typeof ProForm
+    ProSearchForm: typeof ProSearchForm
   }
 }
