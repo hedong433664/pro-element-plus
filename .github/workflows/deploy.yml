@@ -49,8 +49,6 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build docs
-        env:
-          PRO_EP_DOCS_BASE: /${{ github.event.repository.name }}/
         run: npm run docs:build
 
       - name: Setup Pages

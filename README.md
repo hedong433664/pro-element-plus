@@ -2,68 +2,43 @@
 
 ## 项目简介
 
-`@coderhd/pro-element-plus` 是一个基于 `Vue 3` 与 `Element Plus` 的二次封装组件库，目标是提供更贴近业务场景的组件能力，同时保持与 `Element Plus` 的使用习惯和生态兼容。
-
-当前仓库采用多包工作区结构，包含：
+`@coderhd/pro-element-plus` 是一个基于 `Vue 3` 和 `Element Plus` 的业务组件库仓库，当前包含：
 
 - 组件源码
-- 构建与发包逻辑
+- 打包与发布脚本
 - 本地调试工程
-- 业务接入示例
+- 接入验证工程
 - 文档站点
+
+当前组件包括：
+
+- `ProForm`
+- `ProTable`
+- `ProHeader`
+- `ProCol`
 
 ## 仓库结构
 
 ```text
-@coderhd/pro-element-plus
+pro-element-plus
 ├─ packages/
-│  ├─ app/           业务接入示例工程
-│  ├─ components/    组件源码层
-│  ├─ core/          构建与发包核心
-│  ├─ docs/          文档站点
-│  └─ play/          本地调试与交互演示工程
-├─ scripts/          发布与版本管理脚本
-├─ package.json      工作区根脚本与依赖
+│  ├─ app/          接入验证工程
+│  ├─ components/   组件源码
+│  ├─ core/         打包产物与发布入口
+│  ├─ docs/         VitePress 文档站点
+│  └─ play/         本地调试与交互预览
+├─ scripts/         构建、版本、发布脚本
+├─ package.json
 └─ pnpm-workspace.yaml
 ```
 
-## 各子包职责
+## 常用命令
 
-### `packages/components`
-
-负责维护组件源码、类型定义和样式依赖入口，是组件能力的事实来源。
-
-### `packages/core`
-
-负责将 `components` 中的源码构建为最终 npm 包产物，包括：
-
-- `es` / `lib` 构建
-- 根入口导出
-- 类型声明整理
-- 全量样式与按需样式入口
-- resolver 生成
-
-### `packages/play`
-
-本地开发阶段的预览与调试工程，适合快速验证组件交互、样式和行为。
-
-### `packages/app`
-
-模拟真实业务项目中的组件消费方式，偏向“接入侧”验证。
-
-### `packages/docs`
-
-基于 `VitePress` 的文档站点，用于沉淀正式的使用说明、示例与 API 文档。
-
-## 开发方式
-
-### 安装依赖
+安装依赖：
 
 ```bash
 pnpm install
 ```
-
-### 常用命令
 
 本地调试：
 
@@ -71,7 +46,7 @@ pnpm install
 pnpm dev
 ```
 
-业务接入验证：
+接入验证：
 
 ```bash
 pnpm start
@@ -95,39 +70,9 @@ pnpm docs:build
 pnpm build
 ```
 
-### 版本管理与发布流程
+## 发布流程
 
-当前仓库采用“根包版本 + `packages/core` 发布版本”同步维护策略，发布包实际为 `packages/core` 中的 `@coderhd/pro-element-plus`。
-
-### 包名环境配置
-
-仓库根目录提供了 `.env` 作为统一包名配置入口，当前支持：
-
-```ini
-PRO_EP_PACKAGE_NAME=@coderhd/pro-element-plus
-PRO_EP_PACKAGE_DIR=./packages/core
-PRO_EP_DOCS_BASE=/
-```
-
-- `PRO_EP_PACKAGE_NAME`：组件库对外发布与示例中使用的包名
-- `PRO_EP_PACKAGE_DIR`：实际执行发布的子包目录
-- `PRO_EP_DOCS_BASE`：文档站点的 VitePress `base`，本地开发通常使用 `/`，GitHub Pages 构建时会覆盖为 `/<仓库名>/`
-
-当需要在 `pro-element-plus` 与 `@scope/pro-element-plus` 之间切换时，推荐流程如下：
-
-```bash
-1. 修改 .env
-2. 执行 pnpm sync:package-name
-3. 执行 pnpm build
-4. 执行 pnpm install
-```
-
-其中 `pnpm sync:package-name` 会自动同步：
-
-- `packages/core/package.json` 中的发布包名
-- `app` / `play` / `docs` 的依赖声明
-- 文档、示例、`vite.config.ts`
-- `tsconfig*.json` 中如 `pro-element-plus/global` 这类类型引用
+发布包为 `packages/core` 下的 `@coderhd/pro-element-plus`。
 
 版本检查：
 
@@ -146,7 +91,7 @@ pnpm release:version prerelease beta
 pnpm release:version 1.2.0
 ```
 
-`releaseType` 支持以下几种：
+`releaseType` 支持：
 
 - `patch`：修订版本，例如 `1.0.0 -> 1.0.1`
 - `minor`：次版本，例如 `1.0.0 -> 1.1.0`

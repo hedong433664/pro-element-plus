@@ -15,8 +15,7 @@
     "release:version": "node scripts/release-version.mjs",
     "release:build": "pnpm build",
     "release:publish": "pnpm lint:fix && node scripts/release-publish.mjs",
-    "release:publish:dry": "pnpm lint:fix && node scripts/release-publish.mjs --dry-run",
-    "sync:package-name": "node scripts/sync-package-name.mjs"
+    "release:publish:dry": "pnpm lint:fix && node scripts/release-publish.mjs --dry-run"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

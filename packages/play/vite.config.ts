@@ -7,7 +7,8 @@ import Components from 'unplugin-vue-components/vite'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { ProElementPlusResolver } from '../core/resolver'
-import { PACKAGE_NAME } from '../../scripts/package-config.mjs'
+
+const PACKAGE_NAME = '@coderhd/pro-element-plus'
 
 const dir = path.dirname(fileURLToPath(import.meta.url))
 const coreRoot = path.resolve(dir, '../core')

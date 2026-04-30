@@ -1,5 +1,6 @@
 import type { ComponentResolver } from 'unplugin-vue-components'
-import { PACKAGE_NAME } from './package-name'
+
+const PACKAGE_NAME = '@coderhd/pro-element-plus'
 
 export interface ProElementPlusResolverOptions {
   /**

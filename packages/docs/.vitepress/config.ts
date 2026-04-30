@@ -5,7 +5,9 @@ import {
 } from '@vitepress-demo-preview/plugin'
 import path from 'path'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import { DOCS_BASE, PACKAGE_NAME } from '../../../scripts/package-config.mjs'
+
+const PACKAGE_NAME = '@coderhd/pro-element-plus'
+const DOCS_BASE = '/pro-element-plus/'
 
 const docsRoot = __dirname
 const coreRoot = path.resolve(docsRoot, '../../core')

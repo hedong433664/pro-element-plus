@@ -1,11 +1,10 @@
 import { spawnSync } from 'node:child_process'
 import path from 'node:path'
-import { PACKAGE_DIR } from './package-config.mjs'
 import { repoRoot } from './release-utils.mjs'
 
 const args = process.argv.slice(2)
 const isDryRun = args.includes('--dry-run')
-const packageDir = path.resolve(repoRoot, PACKAGE_DIR)
+const packageDir = path.resolve(repoRoot, './packages/core')
 
 const run = (command, commandArgs, cwd = repoRoot) => {
   const result = spawnSync(command, commandArgs, {
