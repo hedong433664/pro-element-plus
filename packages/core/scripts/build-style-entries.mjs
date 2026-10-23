@@ -28,22 +28,27 @@ const readStyleImports = (componentName, entryName) => {
   return extractImports(fs.readFileSync(entryFile, 'utf8'))
 }
 
-const toDistImportStatements = (componentName, imports) =>
-  imports
-    .map((importPath) =>
-      importPath.startsWith('../../styles/')
-        ? `import '../../../css/${componentName}.css';`
-        : `import '${importPath}';`,
-    )
+const toStylePath = (importPath, format) => {
+  if (importPath.startsWith('../../styles/')) {
+    return `../../../css/${path.basename(importPath, '.scss')}.css`
+  }
+  if (importPath.startsWith('.')) {
+    return `${importPath}.${format === 'es' ? 'mjs' : 'js'}`
+  }
+  if (format === 'lib' && importPath.startsWith('element-plus/es/')) {
+    return importPath.replace('element-plus/es/', 'element-plus/lib/')
+  }
+  return importPath
+}
+
+const toDistImportStatements = (_componentName, imports) =>
+  [...new Set(imports.map((item) => toStylePath(item, 'es')))]
+    .map((item) => `import '${item}';`)
     .join('\n')
 
-const toDistRequireStatements = (componentName, imports) =>
-  imports
-    .map((importPath) =>
-      importPath.startsWith('../../styles/')
-        ? `require('../../../css/${componentName}.css');`
-        : `require('${importPath}');`,
-    )
+const toDistRequireStatements = (_componentName, imports) =>
+  [...new Set(imports.map((item) => toStylePath(item, 'lib')))]
+    .map((item) => `require('${item}');`)
     .join('\n')
 
 for (const name of componentDirs) {

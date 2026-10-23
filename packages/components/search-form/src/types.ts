@@ -23,6 +23,7 @@ export type ProSearchFormProps<
   autoSearch?: boolean
   autoSearchDebounce?: number
   resetAfterSearch?: boolean
+  /** 按钮区对齐方式，默认 flex-end。 */
   buttonJustify?: ProSearchFormButtonJustify
   hideSearchButton?: boolean
   hideResetButton?: boolean
@@ -53,8 +54,8 @@ export interface ProSearchFormSlots extends ProFormSlots {
 }
 
 export interface ProSearchFormInstance extends ProFormInstance {
-  reset: () => void
-  search: () => void
+  reset: () => Promise<void>
+  search: () => Promise<boolean>
   toggleCollapse: () => void
 }
 

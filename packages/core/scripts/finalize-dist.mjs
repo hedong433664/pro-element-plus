@@ -60,6 +60,10 @@ const orphanBarrel = (subDir) => {
 orphanBarrel('es')
 orphanBarrel('lib')
 createRootIndexDts()
+fs.writeFileSync(
+  path.join(distDir, 'lib', 'package.json'),
+  `${JSON.stringify({ type: 'commonjs' }, null, 2)}\n`,
+)
 
 rm(path.join(distDir, 'core'))
 rm(path.join(distDir, 'components'))

@@ -1,5 +1,5 @@
-import { withInstall, type SFCWithInstall } from 'element-plus/es/utils/index'
-import { ElTable } from 'element-plus'
+import { withInstall, type SFCWithInstall } from '../_utils/install'
+import { ElTable, type TableInstance } from 'element-plus'
 import Table from './src/table.vue'
 import type {
   ProTableInstance,
@@ -11,9 +11,9 @@ import type {
 
 type ElTableInstance = InstanceType<typeof ElTable>
 
-type ProTableComponent = typeof ElTable & {
+type ProTableComponent = {
   new (): ProTableInstance &
-    Omit<ElTableInstance, keyof ProTableInstance> & {
+    Omit<ElTableInstance, keyof TableInstance | keyof ProTableInstance> & {
       $props: ElTableInstance['$props'] &
         ProTablePublicProps &
         ProTablePaginationModelEventProps
@@ -22,9 +22,10 @@ type ProTableComponent = typeof ElTable & {
     }
 }
 
-export const ProTable: SFCWithInstall<ProTableComponent> = withInstall(
-  Table,
-) as unknown as SFCWithInstall<ProTableComponent>
+export const ProTable: SFCWithInstall<ProTableComponent> =
+  /* @__PURE__ */ withInstall(
+    Table,
+  ) as unknown as SFCWithInstall<ProTableComponent>
 
 export default ProTable
 

@@ -5,8 +5,9 @@ import type {
   TableInstance,
   TableProps,
 } from 'element-plus'
-import type { DefaultRow } from 'element-plus/es/components/table/src/table/defaults'
-import tableProps from 'element-plus/es/components/table/src/table/defaults'
+import type { FieldPath } from '../../_utils/types'
+
+type DefaultRow = Record<string, any>
 
 type TableColumnFilters<T extends DefaultRow = DefaultRow> =
   TableColumnCtx<T>['filters']
@@ -56,25 +57,25 @@ export interface ProTableColumnSlotNames {
 }
 
 export interface ProTableColumn<T extends DefaultRow = DefaultRow> {
-  type?: string
+  type?: 'default' | 'selection' | 'index' | 'expand'
   label?: string
   className?: string
   labelClassName?: string
-  property?: string
-  prop?: string
+  property?: FieldPath<T>
+  prop?: FieldPath<T>
   width?: string | number
   minWidth?: string | number
   renderHeader?: TableColumnCtx<T>['renderHeader']
-  sortable?: boolean | string
+  sortable?: boolean | 'custom'
   sortMethod?: TableColumnCtx<T>['sortMethod']
   sortBy?: TableColumnCtx<T>['sortBy']
   resizable?: boolean
   columnKey?: string
-  align?: string
-  headerAlign?: string
+  align?: 'left' | 'center' | 'right'
+  headerAlign?: 'left' | 'center' | 'right'
   showOverflowTooltip?: TableColumnCtx<T>['showOverflowTooltip']
   tooltipFormatter?: TableColumnCtx<T>['tooltipFormatter']
-  fixed?: boolean | string
+  fixed?: boolean | 'left' | 'right'
   formatter?: TableColumnCtx<T>['formatter']
   selectable?: TableColumnCtx<T>['selectable']
   reserveSelection?: boolean
@@ -104,7 +105,6 @@ export type ProTablePaginationProps = Partial<
 >
 
 export const proTableProps = {
-  ...tableProps,
   data: {
     type: Array,
     default: () => [],
@@ -136,7 +136,9 @@ export const proTableProps = {
   },
 } as const
 
-export type ProTableProps<T extends DefaultRow = DefaultRow> = TableProps<T> & {
+export type ProTableProps<T extends DefaultRow = DefaultRow> = Partial<
+  TableProps<T>
+> & {
   columns?: ProTableColumn<T>[]
   hidePagination?: boolean
   currentPage?: number
@@ -160,11 +162,27 @@ export interface ProTablePaginationModelEmits {
 }
 
 export interface ProTableSlots {
+  [slotName: string]: ((scope: any) => VNodeChild) | undefined
   append?: () => VNodeChild
   empty?: () => VNodeChild
 }
 
-export interface ProTableInstance extends TableInstance {
+export interface ProTableInstance extends Pick<
+  TableInstance,
+  | 'clearSelection'
+  | 'getSelectionRows'
+  | 'toggleRowSelection'
+  | 'toggleAllSelection'
+  | 'toggleRowExpansion'
+  | 'setCurrentRow'
+  | 'clearSort'
+  | 'clearFilter'
+  | 'doLayout'
+  | 'sort'
+  | 'scrollTo'
+  | 'setScrollTop'
+  | 'setScrollLeft'
+> {
   tableRef: TableInstance | null
   instance: TableInstance | null
   getInstance: () => TableInstance | null

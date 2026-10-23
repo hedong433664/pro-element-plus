@@ -1,7 +1,6 @@
 import DefaultTheme from 'vitepress/theme'
 import { ElementPlusContainer } from '@vitepress-demo-preview/component'
 import ElementPlus, {
-  ElConfigProvider,
   ID_INJECTION_KEY,
   ZINDEX_INJECTION_KEY,
 } from 'element-plus'
@@ -14,21 +13,12 @@ import '@coderhd/pro-element-plus/style.css'
 import '@vitepress-demo-preview/component/dist/style.css'
 import './index.scss'
 
-import { h } from 'vue'
 import type { App } from 'vue'
+import Layout from './Layout'
 
 export default {
   ...DefaultTheme,
-  Layout: () =>
-    h(
-      ElConfigProvider,
-      {
-        locale: zhCn,
-      },
-      {
-        default: () => h(DefaultTheme.Layout),
-      },
-    ),
+  Layout,
   enhanceApp: async ({ app }: { app: App }) => {
     app.component('demo-preview', ElementPlusContainer)
     app.use(ElementPlus, {

@@ -34,14 +34,12 @@
 
     <ProHeader divider>当前值</ProHeader>
 
-    <pre class="pro-form-demo__json">{{
-      JSON.stringify(formModel, null, 2)
-    }}</pre>
+    <pre class="demo__json">{{ JSON.stringify(formModel, null, 2) }}</pre>
   </div>
 </template>
 
 <script setup lang="tsx">
-import { computed, h, reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import {
   ElInput,
   ElMessage,
@@ -105,7 +103,7 @@ const rules: FormRules<FormModel> = {
   city: [{ required: true, message: '请选择城市', trigger: 'change' }],
 }
 
-const fields = computed((): ProFormField<FormModel>[] => [
+const fields: ProFormField<FormModel>[] = [
   {
     prop: 'name',
     label: '姓名',
@@ -145,8 +143,8 @@ const fields = computed((): ProFormField<FormModel>[] => [
     component: 'ElRadioGroup',
     componentSlots: {
       default: () => [
-        h(ElRadio, { value: 'enabled' }, () => '启用'),
-        h(ElRadio, { value: 'disabled' }, () => '停用'),
+        <ElRadio value="enabled">启用</ElRadio>,
+        <ElRadio value="disabled">停用</ElRadio>,
       ],
     },
     colProps: {
@@ -166,12 +164,7 @@ const fields = computed((): ProFormField<FormModel>[] => [
         width: '100%',
       },
     },
-    hidden: (model) => {
-      if (model.status !== 'enabled') {
-        formModel.enableTime = ''
-      }
-      return model.status !== 'enabled'
-    },
+    hidden: (model) => model.status !== 'enabled',
     colProps: {
       span: 12,
     },
@@ -187,13 +180,9 @@ const fields = computed((): ProFormField<FormModel>[] => [
     },
     componentSlots: {
       default: () =>
-        cityOptions.map((item) =>
-          h(ElOption, {
-            key: item.value,
-            label: item.label,
-            value: item.value,
-          }),
-        ),
+        cityOptions.map((item) => (
+          <ElOption key={item.value} label={item.label} value={item.value} />
+        )),
     },
     colProps: {
       span: 12,
@@ -202,21 +191,29 @@ const fields = computed((): ProFormField<FormModel>[] => [
   {
     prop: 'remark',
     label: '备注',
-    render: ({ value, setValue }) =>
-      h(ElInput, {
-        type: 'textarea',
-        rows: 4,
-        maxlength: 200,
-        showWordLimit: true,
-        placeholder: '请输入备注信息',
-        modelValue: value as string,
-        'onUpdate:modelValue': setValue,
-      }),
+    render: ({ value, setValue }) => (
+      <ElInput
+        type="textarea"
+        rows={4}
+        maxlength={200}
+        showWordLimit
+        placeholder="请输入备注信息"
+        modelValue={value as string}
+        onUpdate:modelValue={setValue}
+      />
+    ),
     colProps: {
       span: 24,
     },
   },
-])
+]
+
+watch(
+  () => formModel.status,
+  (status) => {
+    if (status !== 'enabled') formModel.enableTime = ''
+  },
+)
 
 const handleSubmit = async () => {
   const valid = await formRef.value?.validate().catch(() => false)
@@ -233,14 +230,3 @@ const handleClearValidate = () => {
   formRef.value?.clearValidate()
 }
 </script>
-
-<style lang="scss" scoped>
-.pro-form-demo__json {
-  margin: 0;
-  padding: 16px;
-  border-radius: 12px;
-  background: var(--el-fill-color-light);
-  color: var(--el-text-color-regular);
-  overflow: auto;
-}
-</style>

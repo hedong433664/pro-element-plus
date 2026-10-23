@@ -11,7 +11,8 @@
 </template>
 
 <script setup lang="tsx">
-import type { ProTableColumn } from '@coderhd/pro-element-plus'
+import { ProTable, type ProTableColumn } from '@coderhd/pro-element-plus'
+import { ElTag } from 'element-plus'
 import { computed, ref } from 'vue'
 
 type DataRow = {
@@ -44,15 +45,11 @@ const columns = computed<ProTableColumn<DataRow>[]>(() => [
         align: 'center',
       },
       {
-        label: 'JSX 插槽',
+        label: '函数式插槽',
         align: 'center',
         cellSlots: {
-          default: () => {
-            return <el-tag>JSX 单元格</el-tag>
-          },
-          header: () => {
-            return <span>JSX 表头</span>
-          },
+          default: () => <ElTag>函数式单元格</ElTag>,
+          header: () => <span>函数式表头</span>,
         },
       },
     ],

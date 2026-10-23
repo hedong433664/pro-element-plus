@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["./**/*.test.ts", "./setup.ts", "../vitest.config.ts"],
+  "exclude": [],
+  "compilerOptions": {
+    "paths": {
+      "@coderhd/pro-element-plus": ["../packages/core/index.ts"]
+    }
+  }
+}

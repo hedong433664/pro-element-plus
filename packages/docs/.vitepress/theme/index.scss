@@ -37,3 +37,12 @@
 .el-pagination li + li {
   margin-top: 0;
 }
+
+.demo__json {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-regular);
+  overflow: auto;
+}

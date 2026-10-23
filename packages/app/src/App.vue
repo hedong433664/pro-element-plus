@@ -19,18 +19,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
-import { useRouter } from 'vue-router'
-import { generateRoutes } from './router'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { componentRoutes as routes } from './router'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
-const activeMenu = ref('/proHeader')
-const router = useRouter()
-const routes = generateRoutes()
-
-watchEffect(() => {
-  activeMenu.value = router.currentRoute.value.path
-})
+const route = useRoute()
+const activeMenu = computed(() => route.path)
 </script>
 
 <style lang="scss" scoped>

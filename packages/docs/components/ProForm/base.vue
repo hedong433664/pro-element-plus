@@ -29,13 +29,14 @@
       </ProCol>
     </ProForm>
 
-    <pre class="json">{{ JSON.stringify(formModel, null, 2) }}</pre>
+    <pre class="demo__json">{{ JSON.stringify(formModel, null, 2) }}</pre>
   </div>
 </template>
 
 <script setup lang="tsx">
-import { computed, h, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import {
+  ElButton,
   ElDatePicker,
   ElInput,
   ElMessage,
@@ -46,6 +47,8 @@ import {
   type FormRules,
 } from 'element-plus'
 import {
+  ProForm,
+  ProCol,
   provideProFormComponents,
   type ProFormField,
   type ProFormInstance,
@@ -63,6 +66,7 @@ type FormModel = {
 provideProFormComponents({
   ElInput,
   ElRadioGroup,
+  ElButton,
   ElDatePicker,
   ElSelect,
 })
@@ -134,8 +138,8 @@ const fields = computed((): ProFormField<FormModel>[] => [
     component: 'ElRadioGroup',
     componentSlots: {
       default: () => [
-        h(ElRadio, { value: 'enabled' }, () => '启用'),
-        h(ElRadio, { value: 'disabled' }, () => '停用'),
+        <ElRadio value="enabled">启用</ElRadio>,
+        <ElRadio value="disabled">停用</ElRadio>,
       ],
     },
     colProps: {
@@ -155,12 +159,7 @@ const fields = computed((): ProFormField<FormModel>[] => [
         width: '100%',
       },
     },
-    hidden: (model) => {
-      if (model.status !== 'enabled') {
-        formModel.enableTime = ''
-      }
-      return model.status !== 'enabled'
-    },
+    hidden: (model) => model.status !== 'enabled',
     colProps: {
       span: 12,
     },
@@ -175,23 +174,27 @@ const fields = computed((): ProFormField<FormModel>[] => [
     },
     componentSlots: {
       default: () =>
-        cityOptions.map((item) =>
-          h(ElOption, {
-            key: item.value,
-            label: item.label,
-            value: item.value,
-          }),
-        ),
+        cityOptions.map((item) => (
+          <ElOption key={item.value} label={item.label} value={item.value} />
+        )),
     },
     colProps: {
       span: 12,
     },
   },
   {
-    label: 'jsx',
+    label: '自定义内容',
     render: () => <div>这是通过 render 字段渲染的内容</div>,
   },
 ])
+
+// 显隐判断只返回布尔值；清值操作独立处理。
+watch(
+  () => formModel.status,
+  (status) => {
+    if (status !== 'enabled') formModel.enableTime = ''
+  },
+)
 
 const handleSubmit = async () => {
   const valid = await formRef.value?.validate().catch(() => false)
@@ -203,14 +206,3 @@ const handleReset = () => {
   formRef.value?.resetFields()
 }
 </script>
-
-<style lang="scss" scoped>
-.json {
-  margin-top: 20px;
-  padding: 16px;
-  border-radius: 12px;
-  background: var(--el-fill-color-light);
-  color: var(--el-text-color-regular);
-  overflow: auto;
-}
-</style>

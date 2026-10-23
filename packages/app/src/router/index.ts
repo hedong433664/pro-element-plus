@@ -1,31 +1,19 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { camelCase } from 'lodash-es'
-import type { RouteRecordRaw } from 'vue-router'
+import type { RouteComponent, RouteRecordRaw } from 'vue-router'
 
-export const generateRoutes = (): RouteRecordRaw[] => {
-  const modules = import.meta.glob('../views/**/index.vue')
+const modules = import.meta.glob<{ default: RouteComponent }>(
+  '../views/**/index.vue',
+)
 
-  return Object.keys(modules).map((path) => {
-    const route: RouteRecordRaw = {
-      path: '/' + camelCase(path.replace(/(\..\/views\/|\/index.vue)/g, '')),
-      name: path.replace(/(\..\/views\/|\/index.vue)/g, ''),
-      component: modules[path] as () => Promise<typeof import('*.vue')>,
-    }
-    return route
-  })
-}
-
-const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    redirect: '/proHeader',
+export const componentRoutes: RouteRecordRaw[] = Object.entries(modules).map(
+  ([path, component]) => {
+    const name = path.replace(/(\.\.\/views\/|\/index\.vue)/g, '')
+    return { path: '/' + camelCase(name), name, component }
   },
-  ...generateRoutes(),
-]
+)
 
-const router = createRouter({
+export default createRouter({
   history: createWebHashHistory(),
-  routes,
+  routes: [{ path: '/', redirect: '/proHeader' }, ...componentRoutes],
 })
-
-export default router

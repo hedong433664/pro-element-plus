@@ -13,6 +13,6 @@ export * from '../components/table'
 export * from '../components/form'
 export * from '../components/search-form'
 
-const installer = makeInstaller(components)
+const installer = /* @__PURE__ */ makeInstaller(components)
 
 export default installer

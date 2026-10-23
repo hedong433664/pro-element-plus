@@ -1,6 +1,6 @@
 {
   "name": "@coderhd/pro-element-plus",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "基于 Element Plus 的二次封装 Vue 3 组件库",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -52,7 +52,8 @@
   ],
   "files": [
     "dist",
-    "global.d.ts"
+    "global.d.ts",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "rimraf dist && vite build --config vite.es.config.ts && vite build --config vite.lib.config.ts && vite build --config vite.index.config.ts && node scripts/build-css.mjs && node scripts/build-style-entries.mjs && node scripts/finalize-dist.mjs && pnpm run build:resolver",
@@ -65,12 +66,11 @@
     "element-plus",
     "components"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "packageManager": "pnpm@10.6.5",
   "peerDependencies": {
-    "element-plus": "^2.7.0",
-    "lodash-es": "^4.17.21",
-    "vue": "^3.4.0"
+    "element-plus": "^2.13.5",
+    "vue": "^3.5.30"
   },
   "publishConfig": {
     "access": "public",

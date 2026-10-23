@@ -8,9 +8,9 @@
     <template
       v-for="slotName in forwardedSlotNames"
       :key="slotName"
-      #[slotName]
+      #[slotName]="scope"
     >
-      <slot :name="slotName" />
+      <slot :name="slotName" v-bind="scope" />
     </template>
 
     <ProCol
@@ -58,13 +58,17 @@
 
 <script setup lang="ts">
 import { ArrowDown, ArrowUp, Refresh, Search } from '@element-plus/icons-vue'
-import {
-  ElButton,
-  type FormItemProp,
-  type FormValidateCallback,
-} from 'element-plus'
+import { ElButton, type FormItemProp } from 'element-plus'
 import { debounce, omit } from 'lodash-es'
-import { computed, nextTick, onMounted, ref, useSlots, watch } from 'vue'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useSlots,
+  watch,
+} from 'vue'
 
 import ProCol from '../../col/src/col.vue'
 import ProForm from '../../form/src/form.vue'
@@ -73,7 +77,7 @@ import type {
   ProSearchFormEmits,
   ProSearchFormFields,
   ProSearchFormInstance,
-  ProSearchFormProps,
+  ProSearchFormPublicProps,
   ProSearchFormSlots,
 } from './types'
 
@@ -86,12 +90,12 @@ defineSlots<ProSearchFormSlots>()
 const slots = useSlots()
 const emit = defineEmits<ProSearchFormEmits>()
 
-const props = withDefaults(defineProps<ProSearchFormProps>(), {
+const props = withDefaults(defineProps<ProSearchFormPublicProps>(), {
   initSearch: true,
   autoSearch: true,
   autoSearchDebounce: 300,
   resetAfterSearch: true,
-  buttonJustify: 'flex-start',
+  buttonJustify: 'flex-end',
   hideSearchButton: false,
   hideResetButton: false,
   hideCollapseButton: false,
@@ -104,8 +108,10 @@ const props = withDefaults(defineProps<ProSearchFormProps>(), {
 })
 
 const formRef = ref<ProFormInstance | null>(null)
-const collapsed = ref(false)
+const collapsed = ref(props.defaultCollapsed)
 const resetting = ref(false)
+let disposed = false
+let searchVersion = 0
 
 type ProFormValidateArgs = Parameters<ProFormInstance['validate']>
 type ProFormValidateFieldArgs = Parameters<ProFormInstance['validateField']>
@@ -133,45 +139,82 @@ const formProps = computed(() =>
   ]),
 )
 
-const showActionRow = computed(
-  () => !props.hideSearchButton || !props.hideResetButton || !!slots.default,
-)
-
 const forwardedSlotNames = computed(() =>
   Object.keys(slots).filter((slotName) => slotName !== 'default'),
 )
 
+const visibleFields = computed(() =>
+  props.fields.filter((field) => {
+    const hidden =
+      typeof field.hidden === 'function'
+        ? field.hidden(props.model ?? {}, field)
+        : field.hidden
+    const visible =
+      typeof field.visible === 'function'
+        ? field.visible(props.model ?? {}, field)
+        : field.visible
+    return !hidden && visible !== false
+  }),
+)
+const collapsedCount = computed(() => Math.max(0, props.collapsedCount))
 const showCollapseButton = computed(
-  () => !props.hideCollapseButton && props.fields.length > props.collapsedCount,
+  () =>
+    !props.hideCollapseButton &&
+    visibleFields.value.length > collapsedCount.value,
+)
+const showActionRow = computed(
+  () =>
+    !props.hideSearchButton ||
+    !props.hideResetButton ||
+    !!slots.default ||
+    showCollapseButton.value,
 )
 
+// Collapsing only changes visibility; fields remain registered.
 const innerFields = computed<ProSearchFormFields>(() => {
   if (!collapsed.value) return props.fields
-  return props.fields.filter((_, index) => index < props.collapsedCount)
+  const collapsedFields = new Set(
+    visibleFields.value.slice(collapsedCount.value),
+  )
+  return props.fields.map((field) =>
+    collapsedFields.has(field) ? { ...field, visible: false } : field,
+  )
 })
 
-const search = () => {
-  formRef.value?.validate(((valid: boolean) => {
-    if (valid) {
-      emit('search', props.model)
-    }
-  }) as FormValidateCallback)
+const search = async (): Promise<boolean> => {
+  debounceSearch.cancel()
+  // Drain model watchers before taking ownership of a manual/initial search.
+  await nextTick()
+  debounceSearch.cancel()
+  const version = ++searchVersion
+  if (disposed || !formRef.value) return false
+  try {
+    const valid = await formRef.value.validate()
+    if (!valid || disposed || version !== searchVersion) return false
+    emit('search', props.model)
+    return true
+  } catch {
+    // Element Plus rejects validation promises for invalid forms.
+    return false
+  }
 }
 
-const debounceSearch = debounce(search, props.autoSearchDebounce)
+let debounceSearch = debounce(() => {
+  void search()
+}, props.autoSearchDebounce)
 
-const reset = () => {
-  formRef.value?.resetFields()
+const reset = async () => {
+  debounceSearch.cancel()
+  ++searchVersion
   resetting.value = true
-  emit('reset')
-
-  if (props.resetAfterSearch) {
-    search()
-  }
-
-  nextTick(() => {
+  try {
+    formRef.value?.resetFields()
+    emit('reset')
+    await nextTick()
+  } finally {
     resetting.value = false
-  })
+  }
+  if (props.resetAfterSearch && !disposed) await search()
 }
 
 const toggleCollapse = () => {
@@ -186,18 +229,39 @@ const onValidate = (prop: FormItemProp, isValid: boolean, message: string) => {
 watch(
   () => props.model,
   () => {
-    if (props.autoSearch && !resetting.value) {
-      nextTick(debounceSearch)
+    if (!resetting.value && !disposed) {
+      ++searchVersion
+      if (props.autoSearch) debounceSearch()
     }
   },
-  {
-    deep: true,
-    immediate: props.initSearch,
+  { deep: true },
+)
+watch(
+  () => props.autoSearch,
+  (enabled) => {
+    if (!enabled) {
+      debounceSearch.cancel()
+      ++searchVersion
+    }
+  },
+)
+watch(
+  () => props.autoSearchDebounce,
+  (delay) => {
+    debounceSearch.cancel()
+    debounceSearch = debounce(() => {
+      void search()
+    }, delay)
   },
 )
 
 onMounted(() => {
-  collapsed.value = props.defaultCollapsed
+  if (props.initSearch) void search()
+})
+onBeforeUnmount(() => {
+  disposed = true
+  ++searchVersion
+  debounceSearch.cancel()
 })
 
 defineExpose<ProSearchFormInstance>({

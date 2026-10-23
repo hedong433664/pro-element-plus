@@ -22,9 +22,12 @@ import type {
   RowProps,
   SelectInstance,
   SwitchInstance,
-  TimePickerDefaultProps,
+  TimePickerInstance,
   TimeSelectInstance,
 } from 'element-plus'
+
+import type { FieldPath } from '../../_utils/types'
+export type { FieldPath } from '../../_utils/types'
 
 import type { ProColProps } from '../../col/src/types'
 
@@ -46,8 +49,8 @@ export interface ProFormBuiltinComponentTypeMap {
     slots: DatePickerInstance['$slots']
   }
   ElTimePicker: {
-    props: TimePickerDefaultProps
-    slots: DatePickerInstance['$slots']
+    props: TimePickerInstance['$props']
+    slots: TimePickerInstance['$slots']
   }
   ElTimeSelect: {
     props: TimeSelectInstance['$props']
@@ -104,13 +107,25 @@ export type ProFormComponentProps<TName extends ProFormComponentName> =
 export type ProFormComponentRawSlots<TName extends ProFormComponentName> =
   ProFormComponentTypeMap[TName]['slots']
 
+// Schema callbacks are invoked with their own model and field. Method signatures
+// preserve assignability when a typed schema crosses the untyped SFC boundary.
+export type ProFormFieldPredicate<TModel extends Record<string, any>> = {
+  test(model: TModel, field: ProFormField<TModel>): boolean
+}['test']
+
 export interface ProFormFieldBase<
   TModel extends Record<string, any> = Record<string, any>,
-> extends Partial<FormItemProps> {
+> extends Partial<Omit<FormItemProps, 'prop'>> {
+  prop?: FieldPath<TModel> | string[]
   key?: string | number
   colProps?: ProColProps
   isNewLine?: boolean
-  hidden?: boolean | ((model: TModel, field: ProFormField<TModel>) => boolean)
+  /** Visual visibility only; unlike hidden, keeps validation and reset registration. */
+  visible?: boolean | ProFormFieldPredicate<TModel>
+  /** Defaults to modelValue / update:modelValue; supports custom input protocols. */
+  modelProp?: string
+  modelEvent?: string
+  hidden?: boolean | ProFormFieldPredicate<TModel>
 }
 
 export interface ProFormFieldContext<
@@ -126,10 +141,12 @@ export interface ProFormFieldContext<
 export type ProFormFieldRender<
   TModel extends Record<string, any> = Record<string, any>,
   TField extends ProFormField<TModel> = ProFormField<TModel>,
-> = (context: ProFormFieldContext<TModel, TField>) => VNodeChild
+> = {
+  render(context: ProFormFieldContext<TModel, TField>): VNodeChild
+}['render']
 
 export type ProFormComponentSlot<TSlot> = TSlot extends (...args: any[]) => any
-  ? (...args: any[]) => VNodeChild
+  ? (...args: Parameters<TSlot>) => VNodeChild
   : never
 
 export type ProFormComponentSlots<TName extends ProFormComponentName> = {
@@ -211,7 +228,7 @@ export const provideProFormComponents = (
 
 export interface ProFormSlots {
   default?: () => VNodeChild
-  [slotName: string]: (() => VNodeChild) | undefined
+  [slotName: string]: ((context: ProFormFieldContext) => VNodeChild) | undefined
 }
 
 export const proFormProps = {
@@ -225,8 +242,9 @@ export const proFormProps = {
 
 export type ProFormProps<
   TModel extends Record<string, any> = Record<string, any>,
-> = Partial<FormProps> &
+> = Partial<Omit<FormProps, 'model'>> &
   Partial<RowProps> & {
+    model?: TModel
     fields?: ProFormFields<TModel>
   }
 

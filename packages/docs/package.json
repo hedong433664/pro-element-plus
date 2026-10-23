@@ -2,19 +2,20 @@
   "name": "@pro-element-plus/docs",
   "version": "1.0.0",
   "private": true,
-  "description": "@coderhd/pro-element-plus component library documentation",
+  "description": "组件库的中文文档站点与可运行示例",
   "type": "module",
   "scripts": {
     "dev": "vitepress dev .",
-    "build": "vitepress build .",
-    "preview": "vitepress preview ."
+    "build": "pnpm typecheck && vitepress build .",
+    "preview": "vitepress preview .",
+    "typecheck": "node scripts/typecheck.mjs"
   },
   "dependencies": {
     "@coderhd/pro-element-plus": "workspace:*"
   },
   "peerDependencies": {
-    "vue": "^3.4.0",
-    "element-plus": "^2.7.0"
+    "element-plus": "^2.13.5",
+    "vue": "^3.5.30"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",
@@ -26,8 +27,9 @@
     "sass": "^1.98.0",
     "typescript": "^5.9.3",
     "vitepress": "^1.5.0",
-    "vue": "^3.5.30"
+    "vue": "^3.5.30",
+    "vue-tsc": "3.2.5"
   },
-  "license": "ISC",
+  "license": "MIT",
   "packageManager": "pnpm@10.6.5"
 }

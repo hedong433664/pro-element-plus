@@ -23,5 +23,3 @@
 import { ProHeader } from '@coderhd/pro-element-plus'
 import { ElButton } from 'element-plus'
 </script>
-
-<style lang="scss" scoped></style>

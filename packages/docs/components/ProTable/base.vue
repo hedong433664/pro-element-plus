@@ -10,7 +10,8 @@
 </template>
 
 <script setup lang="tsx">
-import type { ProTableColumn } from '@coderhd/pro-element-plus'
+import { ProTable, type ProTableColumn } from '@coderhd/pro-element-plus'
+import { ElButton } from 'element-plus'
 import { computed, ref } from 'vue'
 
 type DataRow = {
@@ -55,21 +56,17 @@ const columns = computed<ProTableColumn<DataRow>[]>(() => [
     width: 240,
     fixed: 'right',
     cellSlots: {
-      default: () => {
-        return (
-          <>
-            <el-button type="primary" text plain>
-              查看
-            </el-button>
-            <el-button type="success" text plain>
-              编辑
-            </el-button>
-            <el-button type="danger" text plain>
-              删除
-            </el-button>
-          </>
-        )
-      },
+      default: () => [
+        <ElButton type="primary" text plain>
+          查看
+        </ElButton>,
+        <ElButton type="success" text plain>
+          编辑
+        </ElButton>,
+        <ElButton type="danger" text plain>
+          删除
+        </ElButton>,
+      ],
     },
   },
 ])

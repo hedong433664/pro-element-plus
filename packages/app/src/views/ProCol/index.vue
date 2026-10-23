@@ -38,8 +38,6 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
-
 <style lang="scss" scoped>
 .el-row {
   width: 100%;

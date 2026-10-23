@@ -41,7 +41,7 @@
 
 <script setup lang="tsx">
 import type { ProTableColumn } from '@coderhd/pro-element-plus'
-import { computed, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 type DataRow = {
   name: string
@@ -52,7 +52,7 @@ type DataRow = {
 const data = ref<DataRow[]>(
   Array.from({ length: 5 }, (_, i) => ({
     name: `姓名 ${i + 1}`,
-    age: Math.floor(Math.random() * 60) + 20,
+    age: 20 + i,
     address: `地址 ${i + 1}`,
   })),
 )
@@ -63,7 +63,7 @@ const total = ref(0)
 const currentPage = ref(1)
 const pageSize = ref(10)
 
-const columns = computed<ProTableColumn[]>(() => [
+const columns: ProTableColumn<DataRow>[] = [
   {
     type: 'selection',
     width: 60,
@@ -107,10 +107,10 @@ const columns = computed<ProTableColumn[]>(() => [
       },
     },
   },
-])
+]
 
 // 多级表头
-const columns2 = computed<ProTableColumn[]>(() => [
+const columns2: ProTableColumn<DataRow>[] = [
   {
     label: '个人信息',
     align: 'center',
@@ -154,32 +154,55 @@ const columns2 = computed<ProTableColumn[]>(() => [
       },
     ],
   },
-])
+]
+
+let requestId = 0
+let cancelDelay: (() => void) | undefined
 
 const mockData = async () => {
+  const id = ++requestId
+  cancelDelay?.()
+  const page = currentPage.value
+  const size = pageSize.value
+
   try {
     loading.value = true
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    data2.value = Array.from({ length: 10 }, (_, i) => ({
-      name: `姓名 ${i + 1 + (currentPage.value - 1) * pageSize.value}`,
-      age: Math.floor(Math.random() * 60) + 20,
-      address: `地址 ${i + 1 + (currentPage.value - 1) * pageSize.value}`,
-    }))
+    await new Promise<void>((resolve) => {
+      const timer = setTimeout(resolve, 1000)
+      cancelDelay = () => {
+        clearTimeout(timer)
+        resolve()
+      }
+    })
+    if (id !== requestId) return
+    cancelDelay = undefined
+
     total.value = 100
+    const start = (page - 1) * size
+    const count = Math.max(0, Math.min(size, total.value - start))
+    data2.value = Array.from({ length: count }, (_, i) => ({
+      name: `姓名 ${start + i + 1}`,
+      age: 20 + ((start + i) % 60),
+      address: `地址 ${start + i + 1}`,
+    }))
   } finally {
-    loading.value = false
+    if (id === requestId) loading.value = false
   }
 }
 
 const handlePagination = (page: number, size: number) => {
-  // eslint-disable-next-line no-console
-  console.log('分页参数', { page, size })
-  mockData()
+  currentPage.value = page
+  pageSize.value = size
+  void mockData()
 }
 
 onMounted(() => {
-  mockData()
+  void mockData()
+})
+
+onBeforeUnmount(() => {
+  requestId++
+  cancelDelay?.()
+  cancelDelay = undefined
 })
 </script>
-
-<style lang="scss" scoped></style>

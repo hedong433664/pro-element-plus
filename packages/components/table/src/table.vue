@@ -1,6 +1,15 @@
 <script lang="ts">
 import { ElPagination, ElTable, ElTableColumn } from 'element-plus'
-import { defineComponent, h, ref, shallowRef, useAttrs, watch } from 'vue'
+import {
+  defineComponent,
+  h,
+  nextTick,
+  onBeforeUnmount,
+  ref,
+  shallowRef,
+  useAttrs,
+  watch,
+} from 'vue'
 import { omit } from 'lodash-es'
 
 import type { TableInstance } from 'element-plus'
@@ -111,7 +120,7 @@ const renderColumn = (
   )
 }
 
-export default defineComponent({
+export default /* @__PURE__ */ defineComponent({
   name: 'ProTable',
   inheritAttrs: false,
   props: proTableProps,
@@ -145,16 +154,31 @@ export default defineComponent({
       },
     )
 
+    let paginationPending = false
+    let disposed = false
+    onBeforeUnmount(() => {
+      disposed = true
+    })
+    const queuePagination = () => {
+      if (paginationPending) return
+      paginationPending = true
+      void nextTick(() => {
+        paginationPending = false
+        if (!disposed)
+          emit('pagination', innerCurrentPage.value, innerPageSize.value)
+      })
+    }
+
     const handlePaginationCurrentPageChange = (value: number) => {
       innerCurrentPage.value = value
       emit('update:currentPage', value)
-      emit('pagination', value, innerPageSize.value)
+      queuePagination()
     }
 
     const handlePaginationPageSizeChange = (value: number) => {
       innerPageSize.value = value
       emit('update:pageSize', value)
-      emit('pagination', innerCurrentPage.value, value)
+      queuePagination()
     }
 
     const getPaginationProps = () => ({
@@ -175,7 +199,7 @@ export default defineComponent({
       },
       getInstance,
       clearSelection: () => tableRef.value?.clearSelection(),
-      getSelectionRows: () => tableRef.value?.getSelectionRows(),
+      getSelectionRows: () => tableRef.value?.getSelectionRows() ?? [],
       toggleRowSelection: (...args: ToggleRowSelectionArgs) =>
         tableRef.value?.toggleRowSelection(...args),
       toggleAllSelection: () => tableRef.value?.toggleAllSelection(),
@@ -193,7 +217,7 @@ export default defineComponent({
         tableRef.value?.setScrollTop(...args),
       setScrollLeft: (...args: SetScrollLeftArgs) =>
         tableRef.value?.setScrollLeft(...args),
-    } as ProTableInstance)
+    } satisfies ProTableInstance)
 
     return () =>
       h('div', { class: 'pro-table' }, [

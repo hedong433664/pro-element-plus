@@ -15,8 +15,13 @@
 </template>
 
 <script setup lang="ts">
-import type { ProTableColumn } from '@coderhd/pro-element-plus'
-import { computed, onMounted, ref } from 'vue'
+import {
+  ProTable,
+  type ProTableColumn,
+  type ProTablePaginationProps,
+} from '@coderhd/pro-element-plus'
+import { vLoading } from 'element-plus'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 type DataRow = {
   name: string
@@ -51,24 +56,34 @@ const columns = computed<ProTableColumn<DataRow>[]>(() => [
   },
 ])
 
-const paginationProps = computed(() => ({
+const paginationProps = computed<ProTablePaginationProps>(() => ({
   layout: 'total, sizes, prev, pager, next, jumper',
   pageSizes: [10, 20, 30, 50],
   background: true,
 }))
 
+let requestId = 0
 const loadData = async () => {
+  const id = ++requestId
+  const page = currentPage.value
+  const size = pageSize.value
   try {
     loading.value = true
+    // 模拟延迟返回的分页数据，并忽略过期结果。
     await new Promise((resolve) => setTimeout(resolve, 500))
-    data.value = Array.from({ length: pageSize.value }, (_, i) => ({
-      name: `用户 ${i + 1 + (currentPage.value - 1) * pageSize.value}`,
-      age: 20 + (i % 10),
-      address: `测试地址 ${i + 1 + (currentPage.value - 1) * pageSize.value}`,
-    }))
+    if (id !== requestId) return
+    const start = (page - 1) * size
     total.value = 100
+    data.value = Array.from(
+      { length: Math.max(0, Math.min(size, total.value - start)) },
+      (_, i) => ({
+        name: `用户 ${start + i + 1}`,
+        age: 20 + (i % 10),
+        address: `测试地址 ${start + i + 1}`,
+      }),
+    )
   } finally {
-    loading.value = false
+    if (id === requestId) loading.value = false
   }
 }
 
@@ -77,6 +92,10 @@ const handlePagination = (page: number, size: number) => {
   pageSize.value = size
   loadData()
 }
+
+onBeforeUnmount(() => {
+  requestId++
+})
 
 onMounted(() => {
   loadData()

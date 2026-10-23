@@ -14,8 +14,9 @@ const coreRoot = path.resolve(docsRoot, '../../core')
 const componentsRoot = path.resolve(docsRoot, '../../components')
 
 export default defineConfig({
+  lang: 'zh-CN',
   title: 'Pro Element Plus',
-  description: 'A component library built on top of Element Plus.',
+  description: '基于 Vue 3 与 Element Plus 的二次封装组件库。',
   base: DOCS_BASE,
   vite: {
     plugins: [vueJsx()],
@@ -91,38 +92,92 @@ export default defineConfig({
   },
   themeConfig: {
     nav: [
-      { text: 'Get Started', link: '/get-started' },
-      { text: 'Components', link: '/components/ProSearchForm/index.md' },
+      { text: '快速开始', link: '/get-started' },
+      { text: '组件文档', link: '/components/ProCol/index.md' },
     ],
+    outline: { level: [2, 3], label: '本页目录' },
+    docFooter: { prev: '上一页', next: '下一页' },
+    lastUpdatedText: '最后更新于',
+    sidebarMenuLabel: '菜单',
+    returnToTopLabel: '返回顶部',
+    skipToContentLabel: '跳转到正文',
+    langMenuLabel: '切换语言',
+    darkModeSwitchLabel: '外观',
+    lightModeSwitchTitle: '切换到浅色主题',
+    darkModeSwitchTitle: '切换到深色主题',
+    notFound: {
+      title: '页面不存在',
+      quote: '请检查访问地址，或返回首页查看组件文档。',
+      linkLabel: '返回首页',
+      linkText: '返回首页',
+    },
     search: {
       provider: 'local',
+      options: {
+        locales: {
+          root: {
+            translations: {
+              button: { buttonText: '搜索文档', buttonAriaLabel: '搜索文档' },
+              modal: {
+                displayDetails: '显示详细列表',
+                resetButtonTitle: '清空搜索',
+                backButtonTitle: '返回搜索',
+                noResultsText: '未找到相关结果',
+                footer: {
+                  selectText: '选择',
+                  selectKeyAriaLabel: '回车键',
+                  navigateText: '切换',
+                  navigateUpKeyAriaLabel: '上方向键',
+                  navigateDownKeyAriaLabel: '下方向键',
+                  closeText: '关闭',
+                  closeKeyAriaLabel: '退出键',
+                },
+              },
+            },
+          },
+        },
+      },
     },
     sidebar: [
       {
-        text: 'Guide',
-        collapsed: false,
-        items: [{ text: 'Get Started', link: '/get-started' }],
-      },
-      {
-        text: 'Components',
+        text: '使用指南',
         collapsed: false,
         items: [
-          { text: 'ProCol', link: 'components/ProCol/index.md' },
-          { text: 'ProForm', link: 'components/ProForm/index.md' },
-          { text: 'ProSearchForm', link: 'components/ProSearchForm/index.md' },
-          { text: 'ProHeader', link: 'components/ProHeader/index.md' },
-          { text: 'ProTable', link: 'components/ProTable/index.md' },
+          { text: '快速开始', link: '/get-started' },
+          { text: '用法示例', link: '/api-examples' },
+        ],
+      },
+      {
+        text: '组件文档',
+        collapsed: false,
+        items: [
+          { text: 'ProCol 栅格布局', link: '/components/ProCol/index.md' },
+          { text: 'ProForm 配置式表单', link: '/components/ProForm/index.md' },
+          {
+            text: 'ProSearchForm 查询表单',
+            link: '/components/ProSearchForm/index.md',
+          },
+          {
+            text: 'ProHeader 标题组件',
+            link: '/components/ProHeader/index.md',
+          },
+          {
+            text: 'ProTable 配置式表格',
+            link: '/components/ProTable/index.md',
+          },
         ],
       },
     ],
     socialLinks: [
       {
         icon: 'github',
+        ariaLabel: '查看 GitHub 源码',
         link: 'https://github.com/hedong433664/pro-element-plus',
       },
     ],
   },
   markdown: {
+    codeCopyButtonTitle: '复制代码',
     config(md) {
       md.use(containerPreview)
       md.use(componentPreview)

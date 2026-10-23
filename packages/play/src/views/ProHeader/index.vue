@@ -34,8 +34,6 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
-
 <style lang="scss" scoped>
 .global-page-container {
   gap: 20px;

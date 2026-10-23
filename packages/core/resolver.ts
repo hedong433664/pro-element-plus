@@ -1,6 +1,13 @@
-import type { ComponentResolver } from 'unplugin-vue-components'
+import type { ComponentResolverObject } from 'unplugin-vue-components'
 
 const PACKAGE_NAME = '@coderhd/pro-element-plus'
+const COMPONENT_NAMES = new Set([
+  'ProHeader',
+  'ProCol',
+  'ProTable',
+  'ProForm',
+  'ProSearchForm',
+])
 
 export interface ProElementPlusResolverOptions {
   /**
@@ -16,13 +23,13 @@ export interface ProElementPlusResolverOptions {
  */
 export function ProElementPlusResolver(
   options: ProElementPlusResolverOptions = {},
-): ComponentResolver {
+): ComponentResolverObject {
   const { importStyle = true } = options
 
   return {
     type: 'component',
     resolve: (name: string) => {
-      if (!name.startsWith('Pro')) return
+      if (!COMPONENT_NAMES.has(name)) return
       const dir = proNameToKebabDir(name)
       if (!dir) return
 

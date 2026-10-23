@@ -1,37 +1,39 @@
+/* eslint-disable no-console */
 import { spawnSync } from 'node:child_process'
 import path from 'node:path'
-import { repoRoot } from './release-utils.mjs'
+import {
+  ensureSyncedVersions,
+  readPackageVersions,
+  repoRoot,
+} from './release-utils.mjs'
+import { DEFAULT_REGISTRY } from './release-registry.mjs'
+import {
+  buildPublishArgs,
+  parsePublishOptions,
+} from './release-publish-options.mjs'
 
-const args = process.argv.slice(2)
-const isDryRun = args.includes('--dry-run')
-const packageDir = path.resolve(repoRoot, './packages/core')
-
-const run = (command, commandArgs, cwd = repoRoot) => {
-  const result = spawnSync(command, commandArgs, {
+const run = (commandArgs, cwd = repoRoot) => {
+  const result = spawnSync('pnpm', commandArgs, {
     cwd,
     stdio: 'inherit',
     shell: true,
   })
-
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1)
-  }
+  if (result.error) throw result.error
+  if (result.status !== 0) process.exit(result.status ?? 1)
 }
 
-run('pnpm', ['release:check'])
-
-const publishArgs = [
-  'publish',
-  '--access',
-  'public',
-  '--registry',
-  'https://registry.npmjs.org/',
-]
-
-if (isDryRun) {
-  publishArgs.push('--dry-run', '--no-git-checks')
-} else {
-  publishArgs.push('--no-git-checks')
+try {
+  const version = ensureSyncedVersions()
+  const { corePackage } = readPackageVersions()
+  const options = parsePublishOptions(process.argv.slice(2), version)
+  const registry = corePackage.publishConfig?.registry ?? DEFAULT_REGISTRY
+  console.log(
+    `发布目标：${corePackage.name}@${version}，标签 ${options.tag}${options.dryRun ? '（预演，不上传）' : ''}`,
+  )
+  run(['release:check'])
+  run(['check'])
+  run(buildPublishArgs(options, registry), path.join(repoRoot, 'packages/core'))
+} catch (error) {
+  console.error(`发布失败：${error.message}`)
+  process.exitCode = 1
 }
-
-run('pnpm', publishArgs, packageDir)

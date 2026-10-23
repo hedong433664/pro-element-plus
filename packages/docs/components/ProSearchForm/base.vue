@@ -6,7 +6,6 @@
       :fields="fields"
       :gutter="16"
       :collapsed-count="3"
-      button-justify="flex-start"
       default-collapsed
       @search="handleSearch"
       @reset="handleReset"
@@ -14,14 +13,15 @@
       <el-button @click="fillKeyword">填充关键字</el-button>
     </ProSearchForm>
 
-    <pre class="json">{{ JSON.stringify(searchModel, null, 2) }}</pre>
+    <pre class="demo__json">{{ JSON.stringify(searchModel, null, 2) }}</pre>
   </div>
 </template>
 
 <script setup lang="tsx">
-import { computed, h, reactive } from 'vue'
-import { ElInput, ElOption, ElSelect, ElMessage } from 'element-plus'
+import { computed, reactive } from 'vue'
+import { ElButton, ElInput, ElOption, ElSelect, ElMessage } from 'element-plus'
 import {
+  ProSearchForm,
   provideProFormComponents,
   type ProSearchFormFields,
 } from '@coderhd/pro-element-plus'
@@ -88,13 +88,9 @@ const fields = computed(
       },
       componentSlots: {
         default: () =>
-          statusOptions.map((item) =>
-            h(ElOption, {
-              key: item.value,
-              label: item.label,
-              value: item.value,
-            }),
-          ),
+          statusOptions.map((item) => (
+            <ElOption key={item.value} label={item.label} value={item.value} />
+          )),
       },
       colProps: {
         span: 8,
@@ -110,13 +106,9 @@ const fields = computed(
       },
       componentSlots: {
         default: () =>
-          departmentOptions.map((item) =>
-            h(ElOption, {
-              key: item.value,
-              label: item.label,
-              value: item.value,
-            }),
-          ),
+          departmentOptions.map((item) => (
+            <ElOption key={item.value} label={item.label} value={item.value} />
+          )),
       },
       colProps: {
         span: 8,
@@ -133,13 +125,9 @@ const fields = computed(
       },
       componentSlots: {
         default: () =>
-          cityOptions.map((item) =>
-            h(ElOption, {
-              key: item.value,
-              label: item.label,
-              value: item.value,
-            }),
-          ),
+          cityOptions.map((item) => (
+            <ElOption key={item.value} label={item.label} value={item.value} />
+          )),
       },
       colProps: {
         span: 8,
@@ -161,7 +149,7 @@ const fields = computed(
 )
 
 const handleSearch = () => {
-  ElMessage.success('已触发查询')
+  ElMessage.info('表单校验通过，已发出查询事件')
 }
 
 const handleReset = () => {
@@ -172,14 +160,3 @@ const fillKeyword = () => {
   searchModel.keyword = '测试关键字'
 }
 </script>
-
-<style lang="scss" scoped>
-.json {
-  margin-top: 20px;
-  padding: 16px;
-  border-radius: 12px;
-  background: var(--el-fill-color-light);
-  color: var(--el-text-color-regular);
-  overflow: auto;
-}
-</style>

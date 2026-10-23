@@ -7,10 +7,11 @@
 </template>
 
 <script setup lang="ts">
+import { ElRow } from 'element-plus'
 import { ProCol } from '@coderhd/pro-element-plus'
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .el-row {
   width: 100%;
 }

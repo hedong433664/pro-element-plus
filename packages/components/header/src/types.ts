@@ -3,7 +3,7 @@ import type { TextProps } from 'element-plus'
 export type ProHeaderProps = {
   /**
    * 是否显示分割线
-   * @default true
+   * @default false
    */
   divider?: boolean
   /**

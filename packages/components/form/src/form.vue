@@ -20,7 +20,7 @@
             )
           "
         >
-          <ProCol v-bind="field.colProps">
+          <ProCol v-show="fieldVisible(field)" v-bind="field.colProps">
             <el-form-item
               v-bind="
                 omit(field, [
@@ -33,12 +33,16 @@
                   'hidden',
                   'isNewLine',
                   'slotName',
+                  'visible',
+                  'modelProp',
+                  'modelEvent',
                 ])
               "
             >
               <slot
                 v-if="isSlotField(field) && field.slotName"
                 :name="field.slotName"
+                v-bind="createFieldContext(field)"
               />
               <component
                 v-else-if="isComponentField(field)"
@@ -58,6 +62,13 @@
         <slot v-if="index === fieldsRow.length - 1" />
       </el-row>
     </template>
+    <el-row
+      v-if="fieldsRow.length === 0 && $slots.default"
+      class="pro-form__row"
+      v-bind="pick(props, ['gutter', 'justify', 'align', 'tag'])"
+    >
+      <slot />
+    </el-row>
   </el-form>
 </template>
 
@@ -93,7 +104,7 @@ import {
   type ProFormFields,
   type ProFormInjectedComponents,
   type ProFormInstance,
-  type ProFormProps,
+  type ProFormPublicProps,
   type ProFormSlots,
 } from './types'
 
@@ -146,7 +157,7 @@ const RenderFieldComponent = defineComponent({
 
 const emit = defineEmits<ProFormEmits>()
 
-const props = withDefaults(defineProps<ProFormProps>(), {
+const props = withDefaults(defineProps<ProFormPublicProps>(), {
   fields: () => [],
   labelPosition: 'right',
   requireAsteriskPosition: 'left',
@@ -247,10 +258,24 @@ const getComponentProps = (
 ): Record<string, unknown> => {
   const fieldContext = createFieldContext(field)
 
+  const modelProp = field.modelProp ?? 'modelValue'
+  const modelEvent = field.modelEvent ?? `update:${modelProp}`
+  const handlerKey = `on${modelEvent[0]?.toUpperCase()}${modelEvent.slice(1)}`
+  const externalHandler = (
+    field.componentProps as Record<string, unknown> | undefined
+  )?.[handlerKey]
+
   return {
     ...field.componentProps,
-    modelValue: fieldContext.value,
-    'onUpdate:modelValue': (value: unknown) => fieldContext.setValue(value),
+    [modelProp]: fieldContext.value,
+    [handlerKey]: [
+      (value: unknown) => fieldContext.setValue(value),
+      ...(Array.isArray(externalHandler)
+        ? externalHandler
+        : typeof externalHandler === 'function'
+          ? [externalHandler]
+          : []),
+    ],
   }
 }
 
@@ -260,6 +285,11 @@ const getComponentSlots = (
   if (!field.componentSlots) return undefined
   return field.componentSlots as Record<string, (...args: any[]) => VNodeChild>
 }
+
+const fieldVisible = (field: ProFormField) =>
+  typeof field.visible === 'function'
+    ? field.visible(props.model ?? {}, field)
+    : field.visible !== false
 
 const fieldHidden = (field: ProFormField) => {
   if (typeof field.hidden === 'function') {

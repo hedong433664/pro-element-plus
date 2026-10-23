@@ -8,7 +8,7 @@
       :fields="fields"
       :gutter="16"
       :collapsed-count="3"
-      buttonJustify="flex-end"
+      button-justify="flex-end"
       default-collapsed
       @search="handleSearch"
       @reset="handleReset"
@@ -19,7 +19,7 @@
 
     <ProHeader divider>当前状态</ProHeader>
 
-    <pre class="pro-search-form-demo__json">{{
+    <pre class="demo__json">{{
       JSON.stringify(
         {
           model: searchModel,
@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="tsx">
-import { computed, h, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { ElInput, ElOption, ElSelect, ElMessage } from 'element-plus'
 import {
   provideProFormComponents,
@@ -57,7 +57,7 @@ provideProFormComponents({
 
 const collapsed = ref(true)
 const searchCount = ref(0)
-const lastSearchParams = ref<Record<string, any> | null>(null)
+const lastSearchParams = ref<Record<string, unknown> | null>(null)
 
 const searchModel = reactive<SearchModel>({
   keyword: '',
@@ -84,105 +84,91 @@ const cityOptions = [
   { label: '深圳', value: 'shenzhen' },
 ]
 
-const fields = computed(
-  (): ProSearchFormFields<SearchModel> => [
-    {
-      prop: 'keyword',
-      label: '关键字',
-      component: 'ElInput',
-      componentProps: {
-        placeholder: '请输入关键字',
-        clearable: true,
-      },
-      colProps: {
-        span: 8,
-      },
+const fields: ProSearchFormFields<SearchModel> = [
+  {
+    prop: 'keyword',
+    label: '关键字',
+    component: 'ElInput',
+    componentProps: {
+      placeholder: '请输入关键字',
+      clearable: true,
     },
-    {
-      prop: 'status',
-      label: '状态',
-      component: 'ElSelect',
-      componentProps: {
-        placeholder: '请选择状态',
-        clearable: true,
-      },
-      componentSlots: {
-        default: () =>
-          statusOptions.map((item) =>
-            h(ElOption, {
-              key: item.value,
-              label: item.label,
-              value: item.value,
-            }),
-          ),
-      },
-      colProps: {
-        span: 8,
-      },
+    colProps: {
+      span: 8,
     },
-    {
-      prop: 'department',
-      label: '部门',
-      component: 'ElSelect',
-      componentProps: {
-        placeholder: '请选择部门',
-        clearable: true,
-      },
-      componentSlots: {
-        default: () =>
-          departmentOptions.map((item) =>
-            h(ElOption, {
-              key: item.value,
-              label: item.label,
-              value: item.value,
-            }),
-          ),
-      },
-      colProps: {
-        span: 8,
-      },
+  },
+  {
+    prop: 'status',
+    label: '状态',
+    component: 'ElSelect',
+    componentProps: {
+      placeholder: '请选择状态',
+      clearable: true,
     },
-    {
-      prop: 'city',
-      label: '城市',
-      component: 'ElSelect',
-      componentProps: {
-        placeholder: '请选择城市',
-        clearable: true,
-        filterable: true,
-      },
-      componentSlots: {
-        default: () =>
-          cityOptions.map((item) =>
-            h(ElOption, {
-              key: item.value,
-              label: item.label,
-              value: item.value,
-            }),
-          ),
-      },
-      colProps: {
-        span: 8,
-      },
+    componentSlots: {
+      default: () =>
+        statusOptions.map((item) => (
+          <ElOption key={item.value} label={item.label} value={item.value} />
+        )),
     },
-    {
-      prop: 'remark',
-      label: '备注',
-      component: 'ElInput',
-      componentProps: {
-        placeholder: '请输入备注',
-        clearable: true,
-      },
-      colProps: {
-        span: 16,
-      },
+    colProps: {
+      span: 8,
     },
-  ],
-)
+  },
+  {
+    prop: 'department',
+    label: '部门',
+    component: 'ElSelect',
+    componentProps: {
+      placeholder: '请选择部门',
+      clearable: true,
+    },
+    componentSlots: {
+      default: () =>
+        departmentOptions.map((item) => (
+          <ElOption key={item.value} label={item.label} value={item.value} />
+        )),
+    },
+    colProps: {
+      span: 8,
+    },
+  },
+  {
+    prop: 'city',
+    label: '城市',
+    component: 'ElSelect',
+    componentProps: {
+      placeholder: '请选择城市',
+      clearable: true,
+      filterable: true,
+    },
+    componentSlots: {
+      default: () =>
+        cityOptions.map((item) => (
+          <ElOption key={item.value} label={item.label} value={item.value} />
+        )),
+    },
+    colProps: {
+      span: 8,
+    },
+  },
+  {
+    prop: 'remark',
+    label: '备注',
+    component: 'ElInput',
+    componentProps: {
+      placeholder: '请输入备注',
+      clearable: true,
+    },
+    colProps: {
+      span: 16,
+    },
+  },
+]
 
 const handleSearch = (params?: Record<string, any>) => {
   searchCount.value += 1
-  lastSearchParams.value = params ?? null
+  lastSearchParams.value = params ? { ...params } : null
   ElMessage.success(`已触发查询，第 ${searchCount.value} 次`)
 }
 
@@ -200,14 +186,3 @@ const fillKeyword = () => {
   searchModel.keyword = '测试关键字'
 }
 </script>
-
-<style lang="scss" scoped>
-.pro-search-form-demo__json {
-  margin: 0;
-  padding: 16px;
-  border-radius: 12px;
-  background: var(--el-fill-color-light);
-  color: var(--el-text-color-regular);
-  overflow: auto;
-}
-</style>

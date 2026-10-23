@@ -11,8 +11,8 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 const dir = path.dirname(fileURLToPath(import.meta.url))
 
 /**
- * 模拟生产：按 package.json 的 exports 使用已构建的 `@coderhd/pro-element-plus/dist`。
- * 请先执行根目录 `pnpm build`（或 `pnpm start`，已包含构
+ * 按 package.json 的 exports 读取组件库构建产物。
+ * 先执行根目录 pnpm build，或使用包含构建步骤的 pnpm start。
  */
 export default defineConfig({
   plugins: [
