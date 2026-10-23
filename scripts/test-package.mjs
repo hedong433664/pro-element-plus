@@ -6,6 +6,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { extractPackageArchive } from './package-archive.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const core = path.join(root, 'packages/core')
@@ -26,7 +27,7 @@ try {
   )
   const archive = fs.readdirSync(temp).find((file) => file.endsWith('.tgz'))
   assert.ok(archive, 'pnpm pack must create an archive')
-  execFileSync('tar', ['-xf', path.join(temp, archive), '-C', temp])
+  await extractPackageArchive(path.join(temp, archive), temp)
   const pkg = path.join(temp, 'package')
   // External runtime dependencies come from the consumer, never from core/node_modules.
   fs.symlinkSync(
