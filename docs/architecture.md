@@ -2,7 +2,7 @@
 
 ## 当前版本
 
-当前准备版本为 `3.0.0`，尚未发布。变更见[更新记录](../packages/core/CHANGELOG.md)。
+当前版本为 `3.0.0`。变更见[更新记录](../packages/core/CHANGELOG.md)。
 
 ## 表单行为
 
