@@ -8,7 +8,11 @@ import {
 } from 'element-plus'
 import { nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { ProHeader, ProSearchForm, ProSearchTable } from '../packages/core'
+import {
+  ProHeader,
+  ProSearchForm,
+  ProSearchTable,
+} from '@coderhd/pro-element-plus'
 import AppSearchTable from '../packages/app/src/views/ProSearchTable/index.vue'
 import PlaySearchTable from '../packages/play/src/views/ProSearchTable/index.vue'
 

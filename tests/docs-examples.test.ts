@@ -1,6 +1,6 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { ElMessage } from 'element-plus'
-import { ProSearchForm, ProSearchTable } from '../packages/core'
+import { ProSearchForm, ProSearchTable } from '@coderhd/pro-element-plus'
 import type { Component } from 'vue'
 import { nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
