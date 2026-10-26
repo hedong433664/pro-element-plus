@@ -5,6 +5,7 @@
 - `ProTable`
 - `ProForm`
 - `ProSearchForm`
+- `ProSearchTable`
 - `ProHeader`
 - `ProCol`
 

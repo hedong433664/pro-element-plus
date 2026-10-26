@@ -9,6 +9,11 @@ describe('component resolver', () => {
       from: '@coderhd/pro-element-plus/es/search-form',
       sideEffects: ['@coderhd/pro-element-plus/es/search-form/style'],
     })
+    expect(await resolver.resolve('ProSearchTable')).toEqual({
+      name: 'ProSearchTable',
+      from: '@coderhd/pro-element-plus/es/search-table',
+      sideEffects: ['@coderhd/pro-element-plus/es/search-table/style'],
+    })
     expect(await resolver.resolve('ProBusinessCard')).toBeUndefined()
     expect(await resolver.resolve('ElInput')).toBeUndefined()
   })

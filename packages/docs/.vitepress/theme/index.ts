@@ -5,7 +5,6 @@ import ElementPlus, {
   ZINDEX_INJECTION_KEY,
 } from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import 'element-plus/theme-chalk/dark/css-vars.css'
 
 import ProElementPlus from '@coderhd/pro-element-plus'
 import '@coderhd/pro-element-plus/style.css'

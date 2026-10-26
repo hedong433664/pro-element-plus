@@ -1,0 +1,10 @@
+.pro-search-table {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__table {
+    min-width: 0;
+  }
+}

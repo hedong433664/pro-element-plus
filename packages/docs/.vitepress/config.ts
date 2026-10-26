@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { createMarkdownStyleIsolation } from './markdown-style-isolation'
 import {
   containerPreview,
   componentPreview,
@@ -82,6 +83,9 @@ export default defineConfig({
       ],
     },
     css: {
+      postcss: {
+        plugins: [createMarkdownStyleIsolation()],
+      },
       preprocessorOptions: {
         scss: {
           additionalData: `@use "@/element/index.scss" as *;`,
@@ -164,6 +168,10 @@ export default defineConfig({
           {
             text: 'ProTable 配置式表格',
             link: '/components/ProTable/index.md',
+          },
+          {
+            text: 'ProSearchTable 查询表格',
+            link: '/components/ProSearchTable/index.md',
           },
         ],
       },

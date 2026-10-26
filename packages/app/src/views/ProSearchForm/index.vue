@@ -87,7 +87,8 @@ const cityOptions = [
 const fields: ProSearchFormFields<SearchModel> = [
   {
     prop: 'keyword',
-    label: '关键字',
+    // label: '关键字',
+    labelWidth: 0,
     component: 'ElInput',
     componentProps: {
       placeholder: '请输入关键字',

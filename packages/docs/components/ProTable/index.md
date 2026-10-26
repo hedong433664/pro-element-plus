@@ -4,7 +4,9 @@ description: 基于 ElTable 与 ElPagination 的配置式表格组件
 prev:
   link: /components/ProHeader/index.md
   text: ProHeader 标题组件
-next: false
+next:
+  link: /components/ProSearchTable/index.md
+  text: ProSearchTable 查询表格
 ---
 
 # ProTable 配置式表格

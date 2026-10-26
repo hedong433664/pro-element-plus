@@ -11,6 +11,16 @@
   <ProTable ref="table" :data="rows" :columns="columns" hide-pagination>
     <template #name="{ row }">{{ row.name }}</template>
   </ProTable>
+  <ProSearchTable
+    :model="model"
+    :fields="fields"
+    :columns="columns"
+    :request="request"
+    size="small"
+    @selection-change="onSelect"
+  >
+    <template #table-name="{ row }">{{ row.name }}</template>
+  </ProSearchTable>
 </template>
 
 <script setup lang="ts">
@@ -18,6 +28,7 @@ import { ref } from 'vue'
 import {
   ProForm,
   ProSearchForm,
+  ProSearchTable,
   ProTable,
   type ProFormFields,
   type ProTableColumn,
@@ -31,6 +42,8 @@ const fields: ProFormFields<{ name: string }> = [
 ]
 const rows = [{ name: 'Alice' }]
 const columns: ProTableColumn<{ name: string }>[] = [{ prop: 'name' }]
+const request = async () => ({ data: rows, total: rows.length })
+const onSelect = (_rows: unknown[]) => {}
 const onSearch = (_params?: Record<string, any>) => {}
 form.value?.getInstance()
 search.value?.search()

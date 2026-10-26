@@ -17,6 +17,7 @@ const names = {
   table: 'ProTable',
   form: 'ProForm',
   'search-form': 'ProSearchForm',
+  'search-table': 'ProSearchTable',
 }
 
 try {
@@ -127,7 +128,7 @@ try {
     'Named header imports must tree-shake the table',
   )
   for (const format of ['es', 'lib']) {
-    for (const component of ['form', 'search-form']) {
+    for (const component of ['form', 'search-form', 'search-table']) {
       const bundle = await build({
         stdin: {
           contents:

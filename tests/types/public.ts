@@ -77,3 +77,57 @@ const _invalidCustomFields: ProFormFields<User> = [
     componentProps: { options: [123] },
   },
 ]
+
+// Search table owns results and request state; native table listeners remain public.
+import {
+  ProSearchTable,
+  type ProSearchTableProps,
+  type ProSearchTableRequest,
+  type ProSearchTableInstance,
+} from '@coderhd/pro-element-plus'
+declare const searchTable: InstanceType<typeof ProSearchTable>
+const _searchTableInstance: ProSearchTableInstance = searchTable
+searchTable.search().then((applied: boolean) => applied)
+searchTable.reload()
+searchTable.reset()
+searchTable.getTableInstance()?.clearSelection()
+searchTable.getSearchFormInstance()?.validate()
+const _request: ProSearchTableRequest<{ keyword: string }, User> = async ({
+  query,
+  currentPage,
+  pageSize,
+}) => ({
+  data: [
+    {
+      name: query.keyword,
+      address: { city: String(currentPage) },
+      tags: [{ label: String(pageSize) }],
+    },
+  ],
+  total: 1,
+})
+const _searchTableProps: ProSearchTableProps<{ keyword: string }, User> = {
+  request: _request,
+  model: { keyword: '' },
+  fields: [{ prop: 'keyword', component: 'ElInput' }],
+  columns: [{ prop: 'name' }],
+  size: 'small',
+}
+const _invalidData: ProSearchTableProps = {
+  request: async () => ({ data: [], total: 0 }),
+  // @ts-expect-error data can only come from request
+  data: [],
+}
+const _invalidTotal: ProSearchTableProps = {
+  request: async () => ({ data: [], total: 0 }),
+  // @ts-expect-error total can only come from request
+  total: 100,
+}
+const _invalidLoading: ProSearchTableProps = {
+  request: async () => ({ data: [], total: 0 }),
+  // @ts-expect-error loading is internally managed
+  loading: true,
+}
+const _nativeTableListener: InstanceType<
+  typeof ProSearchTable
+>['$props']['onSelectionChange'] = (_rows: unknown[]) => {}

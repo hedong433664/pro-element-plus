@@ -9,6 +9,7 @@ components
 ├─ col/           ProCol
 ├─ form/          ProForm
 ├─ search-form/   ProSearchForm
+├─ search-table/  ProSearchTable
 ├─ header/        ProHeader
 ├─ table/         ProTable
 ├─ _utils/        公共类型与安装函数

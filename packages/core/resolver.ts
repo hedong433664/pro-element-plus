@@ -7,6 +7,7 @@ const COMPONENT_NAMES = new Set([
   'ProTable',
   'ProForm',
   'ProSearchForm',
+  'ProSearchTable',
 ])
 
 export interface ProElementPlusResolverOptions {

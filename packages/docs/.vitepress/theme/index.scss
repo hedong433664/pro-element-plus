@@ -7,35 +7,9 @@
 .VPDoc.has-aside .content-container {
   max-width: 1200px !important;
 }
-.vp-doc table {
+.vp-doc table:not(:where(.vitepress-demo-preview-preview *)) {
   width: 100%;
   display: inline-table;
-}
-
-.el-table table {
-  display: block;
-  margin: 0;
-  overflow-x: auto;
-}
-
-.el-table th,
-.el-table td {
-  border: inherit;
-  padding: inherit;
-}
-
-.el-table tr {
-  border-top: inherit;
-}
-
-.el-pagination ul {
-  list-style: inherit;
-  padding-left: inherit;
-  margin: inherit;
-}
-
-.el-pagination li + li {
-  margin-top: 0;
 }
 
 .demo__json {

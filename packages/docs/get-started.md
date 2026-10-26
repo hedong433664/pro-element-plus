@@ -7,7 +7,7 @@ next:
 
 # 快速开始
 
-`@coderhd/pro-element-plus` 是基于 Vue 3 与 Element Plus 的二次封装组件库，当前提供 `ProCol`、`ProForm`、`ProSearchForm`、`ProHeader` 和 `ProTable`。
+`@coderhd/pro-element-plus` 是基于 Vue 3 与 Element Plus 的二次封装组件库，当前提供 `ProCol`、`ProForm`、`ProSearchForm`、`ProHeader` 、`ProTable` 和 `ProSearchTable`。
 
 ## 安装
 
@@ -181,6 +181,7 @@ const columns: ProTableColumn<{ name: string }>[] = [
 - [ProSearchForm 查询表单](/components/ProSearchForm/index.md)
 - [ProHeader 标题组件](/components/ProHeader/index.md)
 - [ProTable 配置式表格](/components/ProTable/index.md)
+- [ProSearchTable 查询表格](/components/ProSearchTable/index.md)
 - [用法示例](/api-examples)
 
 ## 兼容范围
