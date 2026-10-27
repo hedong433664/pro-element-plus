@@ -130,7 +130,9 @@ describe.each(examples)('$name 示例页面', ({ Table, Form, Search }) => {
     const model = form.props('model')!
     model.keyword = '第一次'
     await nextTick()
-    expect(await form.vm.search()).toBe(true)
+    const searching = form.vm.search()
+    await vi.advanceTimersByTimeAsync(300)
+    expect(await searching).toBe(true)
     await settle()
     const previous = JSON.parse(wrapper.find('pre').text())
     expect(previous.lastSearchParams.keyword).toBe('第一次')

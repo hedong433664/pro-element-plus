@@ -105,7 +105,7 @@ const request: ProSearchTableRequest<Query, Row> = async ({
 | `page-size`                                        | 每页条数，支持双向绑定                                                   | `10`                    |
 | `hide-pagination`                                  | 是否隐藏分页控件                                                         | `false`                 |
 | `pagination-props`                                 | 分页属性，受控页码、条数和总数不能在此设置                               | 与 `ProTable` 一致      |
-| `init-search / auto-search / auto-search-debounce` | 初始化及自动查询                                                         | `true` / `true` / `300` |
+| `init-search / auto-search / auto-search-debounce` | 初始化、自动查询及按钮防抖                                               | `true` / `true` / `300` |
 | `reset-after-search`                               | 重置字段后是否提交条件并请求                                             | `true`                  |
 | 其他查询表单属性                                   | 与 `ProSearchForm` 一致                                                  | 见对应文档              |
 | 其他表格属性                                       | 与 `ProTable` 一致，如 `border / stripe / row-key / height / tree-props` | 见对应文档              |
@@ -114,14 +114,20 @@ const request: ProSearchTableRequest<Query, Row> = async ({
 
 ## 查询与分页
 
-| 操作            | 行为                                                     |
-| --------------- | -------------------------------------------------------- |
-| 初始化          | 按 `initSearch` 决定是否校验并提交当前条件，查询第一页   |
-| 手动 / 自动查询 | 校验通过后提交条件，返回第一页并请求                     |
-| 修改页码        | 使用已提交条件请求对应页                                 |
-| 修改每页条数    | 返回第一页并请求一次                                     |
-| `reload()`      | 保持当前页与已提交条件重新请求；尚未提交过时取当前模型   |
-| `reset()`       | 恢复字段初始值，按 `resetAfterSearch` 决定是否提交并请求 |
+查询按钮、实例 `search()`、重置后的查询、`reload()` 和自动查询共用 `autoSearchDebounce`（默认 300ms）。防抖窗口内以最后一次操作为准，只发起一次请求。关闭 `autoSearch` 仅停止输入变化触发的查询，按钮和实例方法仍走防抖。
+
+初始化查询不等待防抖，挂载后直接校验并请求。重置立即恢复字段并回到第一页，只有后续请求需要等待。翻页立即请求并取消尚未执行的队列，避免随后重复请求。
+
+被替换的 `search()` / `reload()` 返回 `false`；`reset()` 等待重置及可选的请求完成或被取消。防抖不取消已经发出的 HTTP 请求，仍只应用最新请求结果。
+
+| 操作            | 行为                                                         |
+| --------------- | ------------------------------------------------------------ |
+| 初始化          | 按 `initSearch` 决定是否校验并提交当前条件，查询第一页       |
+| 手动 / 自动查询 | 防抖后校验，通过后提交条件并请求第一页                       |
+| 修改页码        | 使用已提交条件请求对应页                                     |
+| 修改每页条数    | 返回第一页并立即请求一次                                     |
+| `reload()`      | 防抖后使用当前页与已提交条件；尚未提交过时取当前模型         |
+| `reset()`       | 立即恢复字段和第一页，按 `resetAfterSearch` 决定是否排队查询 |
 
 外部修改 `currentPage / pageSize` 也会触发请求。同一轮页码和条数变化合并处理。更换 `request` 函数本身不自动请求，需调用 `reload()`。
 
@@ -139,11 +145,11 @@ const request: ProSearchTableRequest<Query, Row> = async ({
 
 ## 实例
 
-| 名称                                              | 说明                                                 |
-| ------------------------------------------------- | ---------------------------------------------------- |
-| `search(): Promise<boolean>`                      | 校验并提交当前条件，请求第一页；返回是否成功应用结果 |
-| `reload(): Promise<boolean>`                      | 重新请求，返回是否成功应用结果                       |
-| `reset(): Promise<void>`                          | 等待字段重置和可选的请求完成                         |
-| `getSearchFormInstance()`                         | 获取 `ProSearchForm` 实例，挂载前为 `null`           |
-| `getTableInstance()`                              | 获取 `ProTable` 实例，挂载前为 `null`                |
-| `data / total / loading / currentPage / pageSize` | 只读状态，用于查看当前结果与请求状态                 |
+| 名称                                              | 说明                                         |
+| ------------------------------------------------- | -------------------------------------------- |
+| `search(): Promise<boolean>`                      | 防抖后校验并请求第一页；返回是否成功应用结果 |
+| `reload(): Promise<boolean>`                      | 防抖后重新请求；返回是否成功应用结果         |
+| `reset(): Promise<void>`                          | 等待字段重置和可选的请求完成                 |
+| `getSearchFormInstance()`                         | 获取 `ProSearchForm` 实例，挂载前为 `null`   |
+| `getTableInstance()`                              | 获取 `ProTable` 实例，挂载前为 `null`        |
+| `data / total / loading / currentPage / pageSize` | 只读状态，用于查看当前结果与请求状态         |

@@ -73,6 +73,294 @@ describe('ProSearchTable', () => {
     expect(await wrapper.vm.search()).toBe(true)
     expect(request).toHaveBeenCalledOnce()
   })
+  it.each([true, false])(
+    '连续点击查询只发起一次 request（autoSearch=%s）',
+    async (autoSearch) => {
+      vi.useFakeTimers()
+      const model = reactive({ keyword: '' })
+      const { wrapper, request } = create({
+        model,
+        autoSearch,
+        initSearch: false,
+      })
+      await settle()
+      const button = wrapper
+        .findAll('button')
+        .find((button) => button.text() === '查询')!
+      await button.trigger('click')
+      await vi.advanceTimersByTimeAsync(100)
+      model.keyword = 'latest'
+      await button.trigger('click')
+      await vi.advanceTimersByTimeAsync(100)
+      await button.trigger('click')
+      await vi.advanceTimersByTimeAsync(299)
+      await settle()
+      expect(request).not.toHaveBeenCalled()
+      await vi.advanceTimersByTimeAsync(1)
+      await settle()
+      expect(request).toHaveBeenCalledExactlyOnceWith({
+        query: { keyword: 'latest' },
+        currentPage: 1,
+        pageSize: 10,
+      })
+      await vi.advanceTimersByTimeAsync(500)
+      await settle()
+      expect(request).toHaveBeenCalledTimes(1)
+    },
+  )
+  it('实例 search 与按钮共用防抖，不重复请求', async () => {
+    vi.useFakeTimers()
+    const { wrapper, request } = create({ initSearch: false })
+    await settle()
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === '查询')!
+      .trigger('click')
+    expect(request).not.toHaveBeenCalled()
+    const searching = wrapper.vm.search()
+    await vi.advanceTimersByTimeAsync(299)
+    expect(request).not.toHaveBeenCalled()
+    await vi.advanceTimersByTimeAsync(1)
+    expect(await searching).toBe(true)
+    expect(request).toHaveBeenCalledTimes(1)
+    await vi.advanceTimersByTimeAsync(500)
+    await settle()
+    expect(request).toHaveBeenCalledTimes(1)
+  })
+  it('防抖后仍需校验通过才能请求', async () => {
+    vi.useFakeTimers()
+    const { wrapper, request } = create({
+      initSearch: false,
+      fields: [
+        {
+          prop: 'keyword',
+          component: markRaw(ElInput),
+          rules: [{ required: true, message: '请输入条件' }],
+        },
+      ],
+    })
+    await settle()
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === '查询')!
+      .trigger('click')
+    await vi.advanceTimersByTimeAsync(300)
+    await settle()
+    expect(request).not.toHaveBeenCalled()
+  })
+  it('初始化查询不等待防抖时间', async () => {
+    vi.useFakeTimers()
+    const { request } = create({ autoSearchDebounce: 5000 })
+    await settle()
+    expect(request).toHaveBeenCalledTimes(1)
+    await vi.advanceTimersByTimeAsync(5000)
+    expect(request).toHaveBeenCalledTimes(1)
+  })
+  it('连续刷新只请求一次，被替换的调用返回 false', async () => {
+    vi.useFakeTimers()
+    const { wrapper, request } = create()
+    await settle()
+    const first = wrapper.vm.reload()
+    await vi.advanceTimersByTimeAsync(100)
+    const second = wrapper.vm.reload()
+    expect(await first).toBe(false)
+    await vi.advanceTimersByTimeAsync(299)
+    expect(request).toHaveBeenCalledTimes(1)
+    await vi.advanceTimersByTimeAsync(1)
+    expect(await second).toBe(true)
+    expect(request).toHaveBeenCalledTimes(2)
+  })
+  it('重置立即恢复字段及第一页，重置后的请求合并防抖', async () => {
+    vi.useFakeTimers()
+    const model = reactive({ keyword: 'initial' })
+    const { wrapper, request } = create({
+      model,
+      fields: [{ prop: 'keyword', component: markRaw(ElInput) }],
+    })
+    await settle()
+    pagination(wrapper).vm.$emit('update:current-page', 3)
+    await settle()
+    model.keyword = 'draft'
+    await settle()
+    const count = request.mock.calls.length
+    const first = wrapper.vm.reset()
+    expect(model.keyword).toBe('initial')
+    expect(wrapper.vm.currentPage).toBe(1)
+    await settle()
+    await vi.advanceTimersByTimeAsync(100)
+    const second = wrapper.vm.reset()
+    await settle()
+    await first
+    await vi.advanceTimersByTimeAsync(299)
+    expect(request).toHaveBeenCalledTimes(count)
+    await vi.advanceTimersByTimeAsync(1)
+    await second
+    expect(request).toHaveBeenCalledTimes(count + 1)
+    expect(request.mock.lastCall?.[0]).toEqual({
+      query: { keyword: 'initial' },
+      currentPage: 1,
+      pageSize: 10,
+    })
+  })
+  it('查询、重置、刷新共用计时器，刷新使用重置后的条件', async () => {
+    vi.useFakeTimers()
+    const model = reactive({ keyword: 'initial' })
+    const { wrapper, request } = create({
+      model,
+      fields: [{ prop: 'keyword', component: markRaw(ElInput) }],
+    })
+    await settle()
+    model.keyword = 'draft'
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === '查询')!
+      .trigger('click')
+    await vi.advanceTimersByTimeAsync(100)
+    const resetting = wrapper.vm.reset()
+    await settle()
+    await vi.advanceTimersByTimeAsync(100)
+    const refreshing = wrapper.vm.reload()
+    await resetting
+    await vi.advanceTimersByTimeAsync(299)
+    expect(request).toHaveBeenCalledTimes(1)
+    await vi.advanceTimersByTimeAsync(1)
+    expect(await refreshing).toBe(true)
+    expect(request).toHaveBeenCalledTimes(2)
+    expect(request.mock.lastCall?.[0].query).toEqual({ keyword: 'initial' })
+    await vi.advanceTimersByTimeAsync(500)
+    expect(request).toHaveBeenCalledTimes(2)
+  })
+  it('刷新后点击查询，以最新输入查询第一页且只请求一次', async () => {
+    vi.useFakeTimers()
+    const model = reactive({ keyword: 'old' })
+    const { wrapper, request } = create({ model })
+    await settle()
+    const refreshing = wrapper.vm.reload()
+    await vi.advanceTimersByTimeAsync(100)
+    model.keyword = 'new'
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === '查询')!
+      .trigger('click')
+    expect(await refreshing).toBe(false)
+    await vi.advanceTimersByTimeAsync(300)
+    await settle()
+    expect(request).toHaveBeenCalledTimes(2)
+    expect(request.mock.lastCall?.[0]).toEqual({
+      query: { keyword: 'new' },
+      currentPage: 1,
+      pageSize: 10,
+    })
+  })
+  it('只重置字段时取消待执行刷新，不发请求', async () => {
+    vi.useFakeTimers()
+    const { wrapper, request } = create({ resetAfterSearch: false })
+    await settle()
+    const refreshing = wrapper.vm.reload()
+    await wrapper.vm.reset()
+    expect(await refreshing).toBe(false)
+    await vi.advanceTimersByTimeAsync(500)
+    expect(request).toHaveBeenCalledTimes(1)
+  })
+  it('翻页立即执行并取消待执行刷新', async () => {
+    vi.useFakeTimers()
+    const { wrapper, request } = create()
+    await settle()
+    const refreshing = wrapper.vm.reload()
+    pagination(wrapper).vm.$emit('update:current-page', 2)
+    await settle()
+    expect(await refreshing).toBe(false)
+    expect(request).toHaveBeenCalledTimes(2)
+    expect(request.mock.lastCall?.[0].currentPage).toBe(2)
+    await vi.advanceTimersByTimeAsync(500)
+    expect(request).toHaveBeenCalledTimes(2)
+  })
+  it('卸载取消待执行刷新，并结束等待中的 Promise', async () => {
+    vi.useFakeTimers()
+    const { wrapper, request } = create()
+    await settle()
+    const refreshing = wrapper.vm.reload()
+    wrapper.unmount()
+    wrappers.pop()
+    expect(await refreshing).toBe(false)
+    await vi.advanceTimersByTimeAsync(500)
+    expect(request).toHaveBeenCalledTimes(1)
+  })
+  it('同一轮输入变化后刷新，以刷新操作为准，不提交草稿', async () => {
+    vi.useFakeTimers()
+    const model = reactive({ keyword: 'submitted' })
+    const { wrapper, request } = create({ model, autoSearch: true })
+    await settle()
+    model.keyword = 'draft'
+    const refreshing = wrapper.vm.reload()
+    await vi.advanceTimersByTimeAsync(300)
+    expect(await refreshing).toBe(true)
+    expect(request).toHaveBeenCalledTimes(2)
+    expect(request.mock.lastCall?.[0].query.keyword).toBe('submitted')
+  })
+  it('刷新替换进行中的查询校验，旧校验不再排入请求', async () => {
+    vi.useFakeTimers()
+    const { wrapper, request } = create({
+      initSearch: false,
+      fields: [
+        {
+          prop: 'keyword',
+          component: markRaw(ElInput),
+          rules: [
+            {
+              validator: (
+                _rule: unknown,
+                _value: unknown,
+                callback: () => void,
+              ) => {
+                setTimeout(callback, 200)
+              },
+            },
+          ],
+        },
+      ],
+    })
+    await settle()
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === '查询')!
+      .trigger('click')
+    await vi.advanceTimersByTimeAsync(300)
+    expect(request).not.toHaveBeenCalled()
+    const refreshing = wrapper.vm.reload()
+    await vi.advanceTimersByTimeAsync(200)
+    await settle()
+    expect(request).not.toHaveBeenCalled()
+    await vi.advanceTimersByTimeAsync(100)
+    expect(await refreshing).toBe(true)
+    expect(request).toHaveBeenCalledTimes(1)
+    await vi.advanceTimersByTimeAsync(500)
+    expect(request).toHaveBeenCalledTimes(1)
+  })
+  it('修改防抖时间会取消待执行刷新并结束等待', async () => {
+    vi.useFakeTimers()
+    const { wrapper, request } = create()
+    await settle()
+    const refreshing = wrapper.vm.reload()
+    await wrapper.setProps({ autoSearchDebounce: 50 })
+    expect(await refreshing).toBe(false)
+    const next = wrapper.vm.reload()
+    await vi.advanceTimersByTimeAsync(49)
+    expect(request).toHaveBeenCalledTimes(1)
+    await vi.advanceTimersByTimeAsync(1)
+    expect(await next).toBe(true)
+    expect(request).toHaveBeenCalledTimes(2)
+  })
+  it('关闭自动查询不会取消待执行刷新', async () => {
+    vi.useFakeTimers()
+    const { wrapper, request } = create({ autoSearch: true })
+    await settle()
+    const refreshing = wrapper.vm.reload()
+    await wrapper.setProps({ autoSearch: false })
+    await vi.advanceTimersByTimeAsync(300)
+    expect(await refreshing).toBe(true)
+    expect(request).toHaveBeenCalledTimes(2)
+  })
   it('分页使用已提交条件的深快照，查询返回第一页且只请求一次', async () => {
     const model = reactive({ keyword: 'first', nested: { value: 1 } })
     const { wrapper, request } = create({ model })
@@ -189,6 +477,7 @@ describe('ProSearchTable', () => {
     wrappers.pop()
   })
   it('只应用最新结果，旧请求不能关闭 loading 或发出成功事件', async () => {
+    vi.useFakeTimers()
     const first = deferred(),
       second = deferred()
     const request = vi
@@ -198,6 +487,7 @@ describe('ProSearchTable', () => {
     const { wrapper } = create({ request })
     await settle()
     const pending = wrapper.vm.reload()
+    await vi.advanceTimersByTimeAsync(300)
     await settle()
     first.resolve(result())
     await settle()

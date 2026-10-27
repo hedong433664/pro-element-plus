@@ -22,6 +22,14 @@ const settle = async () => {
   await flushPromises()
 }
 
+const submit = async (wrapper: ReturnType<typeof create>) => {
+  const pending = wrapper.vm.search()
+  await settle()
+  await vi.advanceTimersByTimeAsync(wrapper.props('autoSearchDebounce') ?? 300)
+  await settle()
+  return pending
+}
+
 beforeEach(() => vi.useFakeTimers())
 afterEach(() => {
   wrappers.splice(0).forEach((wrapper) => wrapper.unmount())
@@ -46,6 +54,40 @@ describe('ProSearchForm', () => {
     await settle()
     expect(wrapper.emitted('search')).toHaveLength(1)
   })
+  it.each([true, false])(
+    '初始化不等待防抖（autoSearch=%s）',
+    async (autoSearch) => {
+      const wrapper = create({
+        initSearch: true,
+        autoSearch,
+        autoSearchDebounce: 5000,
+      })
+      await settle()
+      expect(wrapper.emitted('search')).toHaveLength(1)
+      await vi.advanceTimersByTimeAsync(5000)
+      expect(wrapper.emitted('search')).toHaveLength(1)
+    },
+  )
+  it('实例 search 连续调用只提交一次，被替换的调用返回 false', async () => {
+    const wrapper = create({ autoSearch: false })
+    const first = wrapper.vm.search()
+    await vi.advanceTimersByTimeAsync(100)
+    const second = wrapper.vm.search()
+    expect(await first).toBe(false)
+    await vi.advanceTimersByTimeAsync(299)
+    expect(wrapper.emitted('search')).toBeUndefined()
+    await vi.advanceTimersByTimeAsync(1)
+    expect(await second).toBe(true)
+    expect(wrapper.emitted('search')).toHaveLength(1)
+  })
+  it('关闭自动查询不会取消已经排队的手动查询', async () => {
+    const wrapper = create()
+    const pending = wrapper.vm.search()
+    await wrapper.setProps({ autoSearch: false })
+    await vi.advanceTimersByTimeAsync(300)
+    expect(await pending).toBe(true)
+    expect(wrapper.emitted('search')).toHaveLength(1)
+  })
   it('debounces model changes and cancels the queued search on manual search', async () => {
     const model = reactive({ name: '' })
     const wrapper = create({ model })
@@ -53,15 +95,15 @@ describe('ProSearchForm', () => {
     await nextTick()
     model.name = 'Bob'
     await nextTick()
-    await wrapper.vm.search()
+    await submit(wrapper)
     await vi.advanceTimersByTimeAsync(500)
     expect(wrapper.emitted('search')).toHaveLength(1)
   })
-  it('queries immediately when manual search follows a model update in the same tick', async () => {
+  it('debounces manual search following a model update in the same tick', async () => {
     const model = reactive({ name: '' })
     const wrapper = create({ model })
     model.name = 'Alice'
-    expect(await wrapper.vm.search()).toBe(true)
+    expect(await submit(wrapper)).toBe(true)
     expect(wrapper.emitted('search')).toHaveLength(1)
     await vi.advanceTimersByTimeAsync(500)
     expect(wrapper.emitted('search')).toHaveLength(1)
@@ -98,6 +140,89 @@ describe('ProSearchForm', () => {
     await settle()
     expect(wrapper.emitted('search')).toHaveLength(1)
   })
+  it.each([true, false])(
+    '查询按钮连续点击共用防抖（autoSearch=%s）',
+    async (autoSearch) => {
+      const model = reactive({ name: '' })
+      const wrapper = create({ model, autoSearch })
+      const button = wrapper
+        .findAll('button')
+        .find((button) => button.text() === '查询')!
+      await button.trigger('click')
+      await vi.advanceTimersByTimeAsync(100)
+      model.name = '最后条件'
+      await button.trigger('click')
+      await vi.advanceTimersByTimeAsync(100)
+      await button.trigger('click')
+      await vi.advanceTimersByTimeAsync(299)
+      expect(wrapper.emitted('search')).toBeUndefined()
+      await vi.advanceTimersByTimeAsync(1)
+      await settle()
+      expect(wrapper.emitted('search')).toEqual([[{ name: '最后条件' }]])
+      await vi.advanceTimersByTimeAsync(500)
+      expect(wrapper.emitted('search')).toHaveLength(1)
+    },
+  )
+  it('输入变化和点击查询只使用一个计时器', async () => {
+    const model = reactive({ name: '' })
+    const wrapper = create({ model })
+    model.name = 'Alice'
+    await nextTick()
+    await vi.advanceTimersByTimeAsync(100)
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === '查询')!
+      .trigger('click')
+    await vi.advanceTimersByTimeAsync(299)
+    expect(wrapper.emitted('search')).toBeUndefined()
+    await vi.advanceTimersByTimeAsync(1)
+    await settle()
+    expect(wrapper.emitted('search')).toHaveLength(1)
+    await vi.advanceTimersByTimeAsync(500)
+    expect(wrapper.emitted('search')).toHaveLength(1)
+  })
+  it.each([true, false])(
+    '重置取消待执行的按钮查询（resetAfterSearch=%s）',
+    async (resetAfterSearch) => {
+      const wrapper = create({ autoSearch: false, resetAfterSearch })
+      await wrapper
+        .findAll('button')
+        .find((button) => button.text() === '查询')!
+        .trigger('click')
+      const resetting = wrapper.vm.reset()
+      await settle()
+      await vi.advanceTimersByTimeAsync(500)
+      await resetting
+      expect(wrapper.emitted('search')?.length ?? 0).toBe(
+        resetAfterSearch ? 1 : 0,
+      )
+    },
+  )
+  it('卸载后取消按钮查询', async () => {
+    const onSearch = vi.fn()
+    const wrapper = create({ autoSearch: false, onSearch })
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === '查询')!
+      .trigger('click')
+    wrapper.unmount()
+    wrappers.pop()
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onSearch).not.toHaveBeenCalled()
+  })
+  it('按钮使用更新后的防抖时间', async () => {
+    const wrapper = create({ autoSearch: false })
+    await wrapper.setProps({ autoSearchDebounce: 50 })
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === '查询')!
+      .trigger('click')
+    await vi.advanceTimersByTimeAsync(49)
+    expect(wrapper.emitted('search')).toBeUndefined()
+    await vi.advanceTimersByTimeAsync(1)
+    await settle()
+    expect(wrapper.emitted('search')).toHaveLength(1)
+  })
   it('keeps collapsed fields registered for reset and validation', async () => {
     const model = reactive({ name: 'initial', other: 'initial-other' })
     const wrapper = create({
@@ -117,9 +242,11 @@ describe('ProSearchForm', () => {
     expect(wrapper.vm.fields).toHaveLength(2)
     model.other = ''
     await nextTick()
-    expect(await wrapper.vm.search()).toBe(false)
-    await wrapper.vm.reset()
+    expect(await submit(wrapper)).toBe(false)
+    const resetting = wrapper.vm.reset()
+    await settle()
     await vi.advanceTimersByTimeAsync(500)
+    await resetting
     expect(model.other).toBe('initial-other')
     expect(wrapper.emitted('search')).toHaveLength(1)
   })
@@ -149,6 +276,7 @@ describe('ProSearchForm', () => {
         ],
       })
       const first = wrapper.vm.search()
+      await vi.advanceTimersByTimeAsync(300)
       await settle()
       model.name = 'Bob'
       await nextTick()
@@ -190,8 +318,10 @@ describe('ProSearchForm', () => {
     })
     model.name = 'Alice'
     await nextTick()
-    await wrapper.vm.reset()
+    const resetting = wrapper.vm.reset()
+    await settle()
     await vi.advanceTimersByTimeAsync(500)
+    await resetting
     expect(model.name).toBe('')
     expect(wrapper.emitted('reset')).toHaveLength(1)
     expect(wrapper.emitted('search')).toBeUndefined()

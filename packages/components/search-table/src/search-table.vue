@@ -4,7 +4,7 @@
       ref="searchFormRef"
       v-bind="searchFormProps"
       @search="handleSearch"
-      @reset="emit('reset')"
+      @reset="handleReset"
       @collapsed="emit('collapsed', $event)"
       @validate="handleValidate"
     >
@@ -47,12 +47,17 @@ import {
   getCurrentInstance,
   nextTick,
   onBeforeUnmount,
+  provide,
   ref,
   shallowRef,
   useAttrs,
   useSlots,
   watch,
 } from 'vue'
+import {
+  createSearchScheduler,
+  searchSchedulerKey,
+} from '../../_utils/search-scheduler'
 import ProSearchForm from '../../search-form/src/search-form.vue'
 import ProTable from '../../table/src/table.vue'
 import { proFormProps } from '../../form/src/types'
@@ -96,6 +101,9 @@ const props = withDefaults(defineProps<ProSearchTablePublicProps>(), {
   validateOnRuleChange: true,
   scrollIntoViewOptions: true,
 })
+
+const scheduler = createSearchScheduler(() => props.autoSearchDebounce)
+provide(searchSchedulerKey, scheduler)
 
 const attrs = useAttrs()
 const instance = getCurrentInstance()!
@@ -244,7 +252,17 @@ const handleSearch = () => {
   void scheduleRequest()
 }
 
+const handleReset = () => {
+  setPagination(1, pageSize.value)
+  if (props.resetAfterSearch) {
+    submittedQuery = cloneDeep(props.model)
+    hasSubmitted = true
+  }
+  emit('reset')
+}
+
 const handlePagination = (page: number, size: number) => {
+  scheduler.cancel()
   const targetPage = size !== pageSize.value ? 1 : page
   setPagination(targetPage, size)
   emit('pagination', targetPage, size)
@@ -265,6 +283,7 @@ watch(
     const sizeChanged = size !== pageSize.value
     const targetPage = sizeChanged && page === currentPage.value ? 1 : page
     if (targetPage === currentPage.value && size === pageSize.value) return
+    scheduler.cancel()
     setPagination(targetPage, size)
     void scheduleRequest()
   },
@@ -278,11 +297,15 @@ const search = async () => {
     : false
 }
 const reload = () => {
-  if (!hasSubmitted) {
-    submittedQuery = cloneDeep(props.model)
-    hasSubmitted = true
-  }
-  return scheduleRequest()
+  if (disposed) return Promise.resolve(false)
+  return scheduler.schedule(async (isCurrent) => {
+    if (disposed || !isCurrent()) return false
+    if (!hasSubmitted) {
+      submittedQuery = cloneDeep(props.model)
+      hasSubmitted = true
+    }
+    return scheduleRequest()
+  })
 }
 const reset = async () => {
   const previous = requestId
@@ -291,6 +314,7 @@ const reset = async () => {
 }
 
 onBeforeUnmount(() => {
+  scheduler.cancel()
   disposed = true
   ++requestId
 })

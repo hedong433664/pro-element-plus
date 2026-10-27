@@ -21,6 +21,7 @@ export type ProSearchFormProps<
 > = ProFormProps<TModel> & {
   initSearch?: boolean
   autoSearch?: boolean
+  /** 自动查询、查询和重置后的查询共用的防抖时间，默认 300ms；初始化不等待。 */
   autoSearchDebounce?: number
   resetAfterSearch?: boolean
   /** 按钮区对齐方式，默认 flex-end。 */
@@ -55,6 +56,7 @@ export interface ProSearchFormSlots extends ProFormSlots {
 
 export interface ProSearchFormInstance extends ProFormInstance {
   reset: () => Promise<void>
+  /** 防抖后校验并提交；被后续操作替换或校验失败时返回 false。 */
   search: () => Promise<boolean>
   toggleCollapse: () => void
 }

@@ -24,7 +24,7 @@
         type="primary"
         :icon="Search"
         :size="size"
-        @click="search"
+        @click="queueSearch"
       >
         {{ searchButtonText }}
       </el-button>
@@ -59,9 +59,10 @@
 <script setup lang="ts">
 import { ArrowDown, ArrowUp, Refresh, Search } from '@element-plus/icons-vue'
 import { ElButton, type FormItemProp } from 'element-plus'
-import { debounce, omit } from 'lodash-es'
+import { omit } from 'lodash-es'
 import {
   computed,
+  inject,
   nextTick,
   onBeforeUnmount,
   onMounted,
@@ -70,6 +71,10 @@ import {
   watch,
 } from 'vue'
 
+import {
+  createSearchScheduler,
+  searchSchedulerKey,
+} from '../../_utils/search-scheduler'
 import ProCol from '../../col/src/col.vue'
 import ProForm from '../../form/src/form.vue'
 import type { ProFormInstance } from '../../form/src/types'
@@ -112,6 +117,10 @@ const collapsed = ref(props.defaultCollapsed)
 const resetting = ref(false)
 let disposed = false
 let searchVersion = 0
+let automaticQueryVersion: number | undefined
+const scheduler =
+  inject(searchSchedulerKey, null) ??
+  createSearchScheduler(() => props.autoSearchDebounce)
 
 type ProFormValidateArgs = Parameters<ProFormInstance['validate']>
 type ProFormValidateFieldArgs = Parameters<ProFormInstance['validateField']>
@@ -181,30 +190,47 @@ const innerFields = computed<ProSearchFormFields>(() => {
   )
 })
 
-const search = async (): Promise<boolean> => {
-  debounceSearch.cancel()
-  // Drain model watchers before taking ownership of a manual/initial search.
+const performSearch = async (): Promise<boolean> => {
+  const queuedVersion = scheduler.version
+  // 先排空模型 watcher，避免同一轮更新再排入一次自动查询。
   await nextTick()
-  debounceSearch.cancel()
+  if (
+    disposed ||
+    resetting.value ||
+    !formRef.value ||
+    queuedVersion !== scheduler.version
+  )
+    return false
   const version = ++searchVersion
-  if (disposed || !formRef.value) return false
   try {
     const valid = await formRef.value.validate()
-    if (!valid || disposed || version !== searchVersion) return false
+    if (
+      !valid ||
+      disposed ||
+      version !== searchVersion ||
+      queuedVersion !== scheduler.version
+    )
+      return false
     emit('search', props.model)
     return true
   } catch {
-    // Element Plus rejects validation promises for invalid forms.
     return false
   }
 }
 
-let debounceSearch = debounce(() => {
-  void search()
-}, props.autoSearchDebounce)
+const queueSearch = (): Promise<boolean> => {
+  automaticQueryVersion = undefined
+  if (disposed || resetting.value) return Promise.resolve(false)
+  ++searchVersion
+  return scheduler.schedule(() => performSearch())
+}
+
+// 只有初始化直接校验；公开方法与按钮共用相同的防抖语义。
+const search = (): Promise<boolean> => queueSearch()
 
 const reset = async () => {
-  debounceSearch.cancel()
+  scheduler.cancel()
+  const queuedVersion = scheduler.version
   ++searchVersion
   resetting.value = true
   try {
@@ -214,7 +240,12 @@ const reset = async () => {
   } finally {
     resetting.value = false
   }
-  if (props.resetAfterSearch && !disposed) await search()
+  if (
+    props.resetAfterSearch &&
+    !disposed &&
+    queuedVersion === scheduler.version
+  )
+    await queueSearch()
 }
 
 const toggleCollapse = () => {
@@ -231,37 +262,35 @@ watch(
   () => {
     if (!resetting.value && !disposed) {
       ++searchVersion
-      if (props.autoSearch) debounceSearch()
+      if (props.autoSearch) {
+        void queueSearch()
+        automaticQueryVersion = scheduler.version
+      }
     }
   },
-  { deep: true },
+  { deep: true, flush: 'sync' },
 )
 watch(
   () => props.autoSearch,
   (enabled) => {
-    if (!enabled) {
-      debounceSearch.cancel()
+    if (!enabled && automaticQueryVersion === scheduler.version) {
+      scheduler.cancel()
       ++searchVersion
     }
   },
 )
 watch(
   () => props.autoSearchDebounce,
-  (delay) => {
-    debounceSearch.cancel()
-    debounceSearch = debounce(() => {
-      void search()
-    }, delay)
-  },
+  () => scheduler.cancel(),
 )
 
 onMounted(() => {
-  if (props.initSearch) void search()
+  if (props.initSearch) void performSearch()
 })
 onBeforeUnmount(() => {
   disposed = true
   ++searchVersion
-  debounceSearch.cancel()
+  scheduler.cancel()
 })
 
 defineExpose<ProSearchFormInstance>({

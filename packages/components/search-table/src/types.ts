@@ -68,9 +68,9 @@ export interface ProSearchTableSlots {
 }
 
 export interface ProSearchTableInstance<TRow = Record<string, any>> {
-  /** 校验并提交当前条件，返回第一页；返回值表示请求是否成功应用。 */
+  /** 防抖后校验并提交当前条件，返回第一页；返回值表示请求是否成功应用。 */
   search: () => Promise<boolean>
-  /** 使用已提交条件和当前页重新请求。 */
+  /** 防抖后使用已提交条件和当前页重新请求；被后续操作替换时返回 false。 */
   reload: () => Promise<boolean>
   reset: () => Promise<void>
   getSearchFormInstance: () => ProSearchFormInstance | null
